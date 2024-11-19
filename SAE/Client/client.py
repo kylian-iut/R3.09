@@ -6,48 +6,47 @@ host = 'localhost'
 port = 80
 
 def ecoute(client_socket):
-    while True:
-        try:
-            reply = client_socket.recv(1024).decode()
-            if not reply:
-                break  # Quitter la boucle si la connexion est fermée
-            print(f"\033[92m{reply}\033[0m")
-            
-            if reply == "bye":
-                print("\033[93mLe serveur ferme la connexion\033[0m")
-                client_socket.close()
-                break
-            elif reply == "arret":
-                print("\033[93mLe serveur va s'arrêter\033[0m")
-                reply = "bye"
-                try:
-                    client_socket.send(reply.encode())
-                except OSError:
-                    return
-            else:
-                reply = ""
-                try:
-                    client_socket.send(reply.encode())
-                except OSError:
-                    return
-        except ConnectionResetError:
-            print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
-            retr = input("Voulez-vous reconnecter ? y/n [yes]: ").strip().lower()
-            if retr == 'n':
-                client_socket.close()
+    try:
+        reply = client_socket.recv(1024).decode()
+        if not reply:
+            return
+        print(f"\033[92m{reply}\033[0m")
+        
+        if reply == "bye":
+            print("\033[93mLe serveur ferme la connexion\033[0m")
+            client_socket.close()
+            return "bye"
+        elif reply == "arret":
+            print("\033[93mLe serveur va s'arrêter\033[0m")
+            reply = "bye"
+            try:
+                client_socket.send(reply.encode())
+            except OSError:
                 return
-            else:
-                echange()
+        else:
+            reply = ""
+            try:
+                client_socket.send(reply.encode())
+            except OSError:
                 return
-        except TimeoutError:
-            print(f"\033[31mLa connexion au serveur a échoué!\033[0m")
-            retr = input("Voulez-vous reconnecter ? y/n [yes]: ").strip().lower()
-            if retr == 'n':
-                client_socket.close()
-                return
-            else:
-                echange()
-                return
+    except ConnectionResetError:
+        print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
+        retr = input("Voulez-vous reconnecter ? y/n [yes]: ").strip().lower()
+        if retr == 'n':
+            client_socket.close()
+            return
+        else:
+            echange()
+            return
+    except TimeoutError:
+        print(f"\033[31mLa connexion au serveur a échoué!\033[0m")
+        retr = input("Voulez-vous reconnecter ? y/n [yes]: ").strip().lower()
+        if retr == 'n':
+            client_socket.close()
+            return
+        else:
+            echange()
+            return
 
 def envoie_fichier(client_socket, file_path):
     if not os.path.exists(file_path):
@@ -56,19 +55,21 @@ def envoie_fichier(client_socket, file_path):
 
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
-    print(file_name)
-    print(file_size)
+    print(f"{file_name} : {file_size}")
 
     try:
         client_socket.send("file".encode())
+        print("j'attend réponse fichier")
         client_socket.recv(1024)
 
         client_socket.send(file_name.encode())
+        print("j'attend réponse nom fichier")
         client_socket.recv(1024)
 
         client_socket.send(str(file_size).encode()) 
+        print("j'attend réponse taille fichier")
         client_socket.recv(1024)
-
+        print("on commence le transfert du fichier")
         with open(file_path, "rb") as file:
             while chunk := file.read(1024):
                 client_socket.send(chunk)
@@ -91,6 +92,7 @@ def envoie(client_socket):
         else:
             try:
                 client_socket.send(message.encode())
+                ecoute(client_socket)
             except (ConnectionResetError, OSError):
                 print(f"\033[31mLe serveur a fermé la connexion!\033[0m")
                 client_socket.close()
@@ -98,7 +100,7 @@ def envoie(client_socket):
 
 def echange():
     client_socket = socket.socket()
-    client_socket.settimeout(300)
+    client_socket.settimeout(1)
     try:
         client_socket.connect((host, port))
     except ConnectionRefusedError:
@@ -115,10 +117,8 @@ def echange():
         client_socket.close()
         return
     else:
-        t1 = threading.Thread(target=ecoute, args=[client_socket])
-        t2 = threading.Thread(target=envoie, args=[client_socket])
+        t1 = threading.Thread(target=envoie, args=[client_socket])
         t1.start()
-        t2.start()
         t1.join()
 
 while True:

@@ -61,14 +61,12 @@ def newclient(conn, address):
             continue
         
         if data == "file":
-            conn.send("ack".encode())
-            print(f"Réception d'un fichier...")
             receive_file(conn, address)
         elif data == "bye":
             print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
             conn.send("bye".encode())
             break
-        else:  # 🟦 Traitement des messages texte
+        else:
             print(f"Message reçu de {address} : \033[92m{data}\033[0m")
             broadcast(data, conn, address)
             conn.send("ack".encode())
@@ -78,6 +76,8 @@ def newclient(conn, address):
 
 def receive_file(conn, address): 
     try:
+        conn.send("ack".encode())
+        print(f"Réception d'un fichier...")
         file_name = conn.recv(1024).decode()
         conn.send("ack".encode())
         print(f"Réception du fichier '{file_name}' de {address}")
