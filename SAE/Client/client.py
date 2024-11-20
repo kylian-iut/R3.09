@@ -23,6 +23,10 @@ def ecoute(client_socket):
                 client_socket.send(reply.encode())
             except OSError:
                 return
+        elif reply == "occuped":
+            print("\033[93mLe serveur est occupé\033[0m")
+            client_socket.close()
+            return "occuped"
         else:
             reply = ""
             try:
@@ -52,6 +56,9 @@ def envoie_fichier(client_socket, file_path):
     if not os.path.exists(file_path):
         print(f"\033[31mLe fichier {file_path} n'existe pas.\033[0m")
         return
+    if not os.path.isfile(file_path):
+        print(f"\033[31mLa cible {file_path} n'est pas un fichier.\033[0m")
+        return
 
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
@@ -76,7 +83,8 @@ def envoie_fichier(client_socket, file_path):
         print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
 
 def envoie(client_socket):
-    ecoute(client_socket)
+    if ecoute(client_socket) == 'occuped':
+        return
     while True:
         message = ""
         while message == "":
