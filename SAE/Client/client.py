@@ -13,7 +13,7 @@ def ecoute(client_socket):
         print(f"\033[92m{reply}\033[0m")
         
         if reply == "bye":
-            print("\033[93mLe serveur ferme la connexion\033[0m")
+            print("\033[93mConnexion avec le serveur terminée\033[0m")
             client_socket.close()
             return "bye"
         elif reply == "arret":
@@ -90,7 +90,8 @@ def envoie(client_socket):
         else:
             try:
                 client_socket.send(message.encode())
-                ecoute(client_socket)
+                if ecoute(client_socket) == 'bye':
+                    return
             except (ConnectionResetError, OSError):
                 print(f"\033[31mLe serveur a fermé la connexion!\033[0m")
                 client_socket.close()
@@ -111,15 +112,22 @@ def echange():
             echange()
             return
     except OSError:
-        print(f"\033[31mSocket déjà instancié!\033[0m")
-        client_socket.close()
-        return
+        try:
+            print(f"\033[31mServeur injoignable!\033[0m")
+            client_socket.close()
+            return
+        except KeyboardInterrupt:
+            print(f"\033[31mConnexion annulée!\033[0m")
+            client_socket.close()
+            return
     else:
         t1 = threading.Thread(target=envoie, args=[client_socket])
         t1.start()
         try:
             t1.join()
         except KeyboardInterrupt:
+            client_socket.send("bye".encode())
+            ecoute(client_socket)
             client_socket.close()
             return
 
