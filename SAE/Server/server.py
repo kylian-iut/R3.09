@@ -2,16 +2,23 @@ import socket
 import threading
 import os
 import argparse
+import signal
+import time
 
 port=80
 clients = []
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+shutdown_event = threading.Event()
+
+def handle_sigint(signal, frame):
+    print(f"\033[31mLe serveur s'arrête.\033[0m")
+    shutdown_event.set()
 
 def session():
-    global shutdown_event
     global clients
     server_socket = socket.socket()
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
         server_socket.bind(('0.0.0.0', port))
     except OSError:
@@ -19,60 +26,75 @@ def session():
         server_socket.close()
         return
     server_socket.listen()
+    server_socket.settimeout(1)
     print("Serveur démarré et en attente de connexions...")
 
-    while not shutdown_event.is_set():
-        conn, address = server_socket.accept()
-        if len(clients) == 0:
-            print(f"\033[93mConnexion acceptée pour {address}\033[0m")
-            clients.append(conn)
-            t = threading.Thread(target=newclient, args=(conn, address))
-            t.start()
-        else:
-            print(f"\033[93mConnexion refusé pour {address}\033[0m")
-            reply = "occuped"
-            conn.send(reply.encode())
-            conn.close()
-
-def broadcast(message, sender_conn, address=None):
-    for client in clients:
-        if client != sender_conn:
+    try:
+        while not shutdown_event.is_set():
             try:
-                if address != None:
-                    message=f"Message reçu de {address} : {message}"
-                client.send(message.encode())
-            except BrokenPipeError:
-                print("Impossible d'envoyer à un client déconnecté")
+                conn, address = server_socket.accept()
+                if len(clients) == 0:
+                    print(f"\033[93mConnexion acceptée pour {address}\033[0m")
+                    clients.append(conn)
+                    t = threading.Thread(target=newclient, args=(conn, address))
+                    t.start()
+                else:
+                    print(f"\033[93mConnexion refusé pour {address}\033[0m")
+                    reply = "occuped"
+                    conn.send(reply.encode())
+                    conn.close()
+            except socket.timeout:
+                continue
+    finally:
+        server_socket.close()
+        for client in clients:
+            client.close()
+        print("\033[92mServeur arrêté proprement.\033[0m")
+        cleanup_files()
+ 
+def cleanup_files():   
+    try:
+        files = os.listdir(UPLOAD_DIR)
+        for file in files:
+            file_path = os.path.join(UPLOAD_DIR, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        print("Tous les fichiers ont été supprimés avec succès.")
+    except OSError as err:
+        print(f"Erreur lors de la suppression des fichiers : {err}")
 
 def newclient(conn, address):
-    reply = "ack"
-    conn.send(reply.encode())
-    while True:
-        try:
-            data = conn.recv(1024).decode()
-            if not data:
+    try:
+        reply = "ack"
+        conn.send(reply.encode())
+        while True:
+            try:
+                data = conn.recv(1024).decode()
+                if not data:
+                    break
+            except (ConnectionResetError, ConnectionAbortedError):
+                print(f"\033[31mLa connexion avec {address} a été perdue.\033[0m")
                 break
-        except (ConnectionResetError, ConnectionAbortedError):
-            print(f"\033[31mLa connexion avec {address} a été perdue.\033[0m")
-            break
-        except UnicodeDecodeError:
-            reply = "err"
-            conn.send(reply.encode())
-            continue
-        
-        if data == "file":
-            receive_file(conn, address)
-        elif data == "bye":
-            print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
-            conn.send("bye".encode())
-            break
-        else:
-            print(f"Message reçu de {address} : \033[92m{data}\033[0m")
-            broadcast(data, conn, address)
-            conn.send("ack".encode())
+            except UnicodeDecodeError:
+                reply = "err"
+                conn.send(reply.encode())
+                continue
+            except KeyboardInterrupt:
+                print(f"\033[31mLe serveur s'arrête.\033[0m")
             
-    conn.close()
-    clients.remove(conn)
+            if data == "file":
+                receive_file(conn, address)
+            elif data == "bye":
+                print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
+                conn.send("bye".encode())
+                break
+            else:
+                print(f"Instruction inconnue reçu de {address} : \033[92m{data}\033[0m")
+                conn.send("instruction inconnue".encode())
+    finally:
+        conn.close()
+        if conn in clients:
+            clients.remove(conn)
 
 def receive_file(conn, address): 
     try:
@@ -104,19 +126,15 @@ def receive_file(conn, address):
 
 def main():
     global port
-    global shutdown_event
     parser = argparse.ArgumentParser()
     parser.add_argument('-p','--port',type=int,required=False,help="Spécifiez le port à utiliser.")
     args = parser.parse_args()
     if args.port != None:
         port = args.port
-    while True:
-        cond = input("Voulez-vous démarrer le serveur localhost ? y/n [yes]: ")
-        if cond != 'n':
-            shutdown_event = threading.Event()
-            session()
-        else:
-            exit()
+    
+    signal.signal(signal.SIGINT, handle_sigint)
+    
+    session()
 
 
 if __name__ == "__main__":

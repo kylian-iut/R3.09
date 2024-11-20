@@ -55,21 +55,18 @@ def envoie_fichier(client_socket, file_path):
 
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
-    print(f"{file_name} : {file_size}")
+    print(f"{file_name} : {file_size} octets")
 
     try:
         client_socket.send("file".encode())
-        print("j'attend réponse fichier")
         client_socket.recv(1024)
 
         client_socket.send(file_name.encode())
-        print("j'attend réponse nom fichier")
         client_socket.recv(1024)
 
         client_socket.send(str(file_size).encode()) 
-        print("j'attend réponse taille fichier")
         client_socket.recv(1024)
-        print("on commence le transfert du fichier")
+        print("Téléversement...")
         with open(file_path, "rb") as file:
             while chunk := file.read(1024):
                 client_socket.send(chunk)
@@ -79,6 +76,7 @@ def envoie_fichier(client_socket, file_path):
         print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
 
 def envoie(client_socket):
+    ecoute(client_socket)
     while True:
         message = ""
         while message == "":
@@ -119,11 +117,11 @@ def echange():
     else:
         t1 = threading.Thread(target=envoie, args=[client_socket])
         t1.start()
-        t1.join()
+        try:
+            t1.join()
+        except KeyboardInterrupt:
+            client_socket.close()
+            return
 
-while True:
-    cond = input("Voulez-vous vous connecter au serveur localhost ? y/n [yes]: ")
-    if cond != 'n':
-        echange()
-    else:
-        exit()
+if __name__ == "__main__":
+    echange()
