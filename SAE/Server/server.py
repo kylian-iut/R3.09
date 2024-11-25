@@ -3,7 +3,7 @@ import threading
 import os
 import argparse
 import signal
-import time
+import subprocess
 
 port=80
 max_client=2
@@ -11,6 +11,31 @@ clients = {}
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 shutdown_event = threading.Event()
+
+def execute(file, conn):
+    ext = os.path.splitext(file)[-1]
+    try:
+        if ext == ".py":
+            print(f"\033[93mScript python va être executé\033[0m")
+            result = subprocess.run(["python", file], capture_output=True, text=True, check=True)
+        elif ext == ".c":
+            print(f"\033[93mScript C va être executé\033[0m")
+        elif ext == ".cpp":
+            print(f"\033[93mScript C++ va être executé\033[0m")
+        elif ext == ".java":
+            print(f"\033[93mScript Java va être executé\033[0m")
+        else:
+            print(f"\033[93mScript ne peut pas être executé\033[0m")
+            return "err:lang"
+        print("Sortie standard :")
+        print(result.stdout)
+        conn.send(result.stdout.encode())
+    except subprocess.CalledProcessError as err:
+        print(f"Erreur lors de l'exécution : {err}")
+        return "err:exec"
+    except Exception as err:
+        print(f"Erreur inattendue : {err}")
+        return "err:other"
 
 def handle_sigint(signal, frame):
     print(f"\033[31mLe serveur s'arrête.\033[0m")
@@ -67,6 +92,7 @@ def cleanup_files():
         print(f"Erreur lors de la suppression des fichiers : {err}")
 
 def newclient(conn, address):
+    global clients
     try:
         reply = "ack"
         conn.send(reply.encode())
@@ -88,7 +114,16 @@ def newclient(conn, address):
             if data == "file":
                 receive_file(conn, address)
             elif data == "ok":
-                continue
+                if len(clients[conn]) > 0:
+                    file=clients[conn][0]
+                    state=execute(os.path.join(UPLOAD_DIR, file),conn)
+                    print(state)
+                    if not state:
+                        conn.send("ack".encode())
+                    else:
+                        conn.send(state.encode())
+                else:
+                    conn.send("ack".encode())
             elif data == "bye":
                 print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
                 conn.send("bye".encode())
