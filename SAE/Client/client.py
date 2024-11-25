@@ -14,6 +14,8 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QGridLayout,
     QMessageBox,
+    QListWidget,
+    QListWidgetItem,
 )
 
 host = 'localhost'
@@ -162,24 +164,41 @@ class MainWindow(QMainWindow):
         
         self.stacklayout = QStackedLayout()
 
-        label = QLabel("Température")
-        layout.addWidget(label,0,0)
-
-        self.champ = QLineEdit()
-        layout.addWidget(self.champ,0,1)
-
-        self.T1label = QLabel("°C")
-        layout.addWidget(self.T1label,0,2)
-
-        btn = QPushButton("Convertir")
-        btn.pressed.connect(self.convert_temperature)
-        layout.addWidget(btn,1,1)
+        listWidget = QListWidget(self)
+        newItem = QListWidgetItem()
+        newItem.setText("Test")
+        listWidget.insertItem(-1, newItem)
+        newItem = QListWidgetItem()
+        newItem.setText("Petit")
+        listWidget.insertItem(-1, newItem)
+        newItem = QListWidgetItem()
+        newItem.setText("Cheing")
+        listWidget.insertItem(-1, newItem)
+        layout.addWidget(listWidget,0,0,10,3)
         
-        self.combobox = QComboBox(self)
-        self.combobox.addItem("°C -> K")
-        self.combobox.addItem("K -> °C")
-        self.combobox.currentIndexChanged.connect(self.update_labels)
-        layout.addWidget(self.combobox,1,2)
+        label = QLabel("Serveur")
+        layout.addWidget(label,10,0)
+
+        self.serv = QLineEdit()
+        layout.addWidget(self.serv,10,1)
+
+        self.T1label = QLabel("Port")
+        layout.addWidget(self.T1label,10,2)
+        
+        self.port = QLineEdit()
+        layout.addWidget(self.port,10,3)
+        
+        btn = QPushButton("?")
+        btn.pressed.connect(self.help)
+        layout.addWidget(btn,10,4)
+
+        btn_quit = QPushButton("Quitter")
+        btn.pressed.connect(self.convert_temperature)
+        layout.addWidget(btn_quit,0,3,1,2)
+        
+        btn_quit = QPushButton("Importer")
+        btn.pressed.connect(self.convert_temperature)
+        layout.addWidget(btn_quit,0,3,1,2)
 
         label = QLabel("Conversion")
         layout.addWidget(label,2,0)
@@ -190,10 +209,6 @@ class MainWindow(QMainWindow):
         
         self.T2label = QLabel("K")
         layout.addWidget(self.T2label,2,2)
-        
-        btn = QPushButton("?")
-        btn.pressed.connect(self.help)
-        layout.addWidget(btn,4,2)
 
         widget = QWidget()
         widget.setLayout(layout)
