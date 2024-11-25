@@ -6,7 +6,8 @@ import signal
 import time
 
 port=80
-clients = []
+max_client=2
+clients = {}
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 shutdown_event = threading.Event()
@@ -17,6 +18,7 @@ def handle_sigint(signal, frame):
 
 def session():
     global clients
+    global max_client
     server_socket = socket.socket()
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
@@ -33,9 +35,10 @@ def session():
         while not shutdown_event.is_set():
             try:
                 conn, address = server_socket.accept()
-                if len(clients) == 0:
+                if len(clients) < max_client:
                     print(f"\033[93mConnexion acceptée pour {address}\033[0m")
-                    clients.append(conn)
+                    clients[conn]=[]
+                    print(clients)
                     t = threading.Thread(target=newclient, args=(conn, address))
                     t.start()
                 else:
@@ -84,6 +87,8 @@ def newclient(conn, address):
             
             if data == "file":
                 receive_file(conn, address)
+            elif data == "ok":
+                continue
             elif data == "bye":
                 print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
                 conn.send("bye".encode())
@@ -94,9 +99,10 @@ def newclient(conn, address):
     finally:
         conn.close()
         if conn in clients:
-            clients.remove(conn)
+            del clients[conn]
 
 def receive_file(conn, address): 
+    global clients
     try:
         conn.send("ack".encode())
         print(f"Réception d'un fichier...")
@@ -119,6 +125,7 @@ def receive_file(conn, address):
                 bytes_received += len(chunk)
         
         print(f"\033[92mFichier '{file_name}' reçu avec succès ({bytes_received} octets).\033[0m")
+        clients[conn].append(file_name)
         conn.send("fichier reçu".encode())
     except Exception as e:
         print(f"\033[31mErreur lors de la réception du fichier : {e}\033[0m")

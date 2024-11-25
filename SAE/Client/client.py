@@ -77,8 +77,8 @@ def envoie_fichier(client_socket, file_path):
         with open(file_path, "rb") as file:
             while chunk := file.read(1024):
                 client_socket.send(chunk)
-
         print("\033[92mFichier envoyé avec succès.\033[0m")
+        client_socket.recv(1024)
     except Exception as err:
         print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
 
