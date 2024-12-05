@@ -347,7 +347,7 @@ class MainWindow(QMainWindow):
             self,
             "Sélectionner un ou plusieurs fichiers",
             "",
-            "Python (*.py);;;Tous les fichiers (*)"
+            "Python (*.py);;C (*.c);;C++ (*.cpp *.cc);;Java (*.java);;Texte (*.txt);;Tous les fichiers (*)"
         )
 
         if selected_files:
