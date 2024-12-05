@@ -3,6 +3,7 @@ import sys
 import threading
 import os
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
@@ -16,10 +17,13 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QListWidget,
     QListWidgetItem,
+    QAbstractItemView,
 )
 
 host = 'localhost'
 port = 80
+
+files=["file1.py","main.py","file2.py","file2.py","file2.py","file2.py","file2.py","file2.py","file2.py","file2.py","file2.py","file2.py"]
 
 def ecoute(client_socket):
     try:
@@ -157,24 +161,23 @@ def echange():
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        global files
         super().__init__()
         self.setWindowTitle("Client SAE3.02")
-        self.resize(350, 150)
+        self.setFixedSize(550, 330)
         layout = QGridLayout()
         
         self.stacklayout = QStackedLayout()
 
-        listWidget = QListWidget(self)
-        newItem = QListWidgetItem()
-        newItem.setText("Test")
-        listWidget.insertItem(-1, newItem)
-        newItem = QListWidgetItem()
-        newItem.setText("Petit")
-        listWidget.insertItem(-1, newItem)
-        newItem = QListWidgetItem()
-        newItem.setText("Cheing")
-        listWidget.insertItem(-1, newItem)
-        layout.addWidget(listWidget,0,0,10,3)
+        self.listWidget = QListWidget(self)
+        self.listWidget.resize(700, 700)
+        self.listWidget.setStyleSheet("QListWidget { font-size: 18px; }")
+        self.listWidget.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        for file in files:
+            newItem = QListWidgetItem()
+            newItem.setText(file)
+            self.listWidget.insertItem(-1, newItem)
+        layout.addWidget(self.listWidget,0,0,10,4)
         
         label = QLabel("Serveur")
         layout.addWidget(label,10,0)
@@ -186,52 +189,65 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.T1label,10,2)
         
         self.port = QLineEdit()
-        layout.addWidget(self.port,10,3)
+        layout.addWidget(self.port,10,3,1,2)
         
-        btn = QPushButton("?")
-        btn.pressed.connect(self.help)
-        layout.addWidget(btn,10,4)
+        btn_help = QPushButton("?")
+        btn_help.pressed.connect(self.help)
+        layout.addWidget(btn_help,10,5)
 
         btn_quit = QPushButton("Quitter")
-        btn.pressed.connect(self.convert_temperature)
-        layout.addWidget(btn_quit,0,3,1,2)
+        btn_quit.pressed.connect(self.close)
+        layout.addWidget(btn_quit,0,4,1,2)
         
-        btn_quit = QPushButton("Importer")
-        btn.pressed.connect(self.convert_temperature)
-        layout.addWidget(btn_quit,0,3,1,2)
+        btn_import = QPushButton("Importer")
+        btn_import.pressed.connect(self.importe)
+        layout.addWidget(btn_import,1,4,1,2)
 
-        label = QLabel("Conversion")
-        layout.addWidget(label,2,0)
+        btn_edit = QPushButton("Editer")
+        btn_edit.pressed.connect(self.edit)
+        layout.addWidget(btn_edit,2,4,1,2)
 
-        self.sortie = QLineEdit()
-        self.sortie.setReadOnly(True)
-        layout.addWidget(self.sortie,2,1)
-        
-        self.T2label = QLabel("K")
-        layout.addWidget(self.T2label,2,2)
+        btn_new = QPushButton("Nouveau")
+        btn_new.pressed.connect(self.new)
+        layout.addWidget(btn_new,3,4,1,2)
+
+        btn_rename = QPushButton("Renommer")
+        btn_rename.pressed.connect(self.rename)
+        layout.addWidget(btn_rename,4,4,1,2)
+
+        btn_suppr = QPushButton("Supprimer")
+        btn_suppr.pressed.connect(self.suppr)
+        layout.addWidget(btn_suppr,5,4,1,2)
+
+        btn_upload = QPushButton("Téléverser")
+        btn_upload.pressed.connect(self.upload)
+        btn_upload.setFixedHeight(btn_upload.sizeHint().height() * 4)
+        layout.addWidget(btn_upload,6,4,4,2)
 
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-    def convert_temperature(self):
-        try:
-            temp = float(self.champ.text())
-            if self.combobox.currentText() == "°C -> K":
-                if temp < -273.15:
-                    self.show_error("Valeur incorrect : inférieur à 0 K")
-                    return
-                converted_temp = temp + 273.15
-            else:
-                if temp < 0:
-                    self.show_error("Valeur incorrect : inférieur à 0 K")
-                    return
-                converted_temp = temp - 273.15
-
-            self.sortie.setText(f"{converted_temp:.2f}")
-
-        except ValueError:
-            self.show_error("Valeur incorrect : caractère incompatible")
+    def importe(self):
+        return
+    
+    def importe(self):
+        return
+    
+    def edit(self):
+        return
+    
+    def new(self):
+        return
+    
+    def rename(self):
+        return
+    
+    def suppr(self):
+        return
+    
+    def upload(self):
+        return
     
     def show_error(self, message):
         msg = QMessageBox(self)
@@ -243,21 +259,12 @@ class MainWindow(QMainWindow):
     def help(self):
         msg = QMessageBox(self)
         msg.setWindowTitle("Aide")
-        msg.setText("Permet de convertir une température soit de Kelvin en Celsius, soit de Celsius vers Kelvin")
+        msg.setText("Importez des fichiers, puis sélectionnez le fichier ciblé pour effectuer une action dessus sur la droite. Si vous choisissez Téléverser, le fichier sélectionné sera le script principal")
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.exec()
-
-    def update_labels(self):
-        if self.combobox.currentText() == "°C -> K":
-            self.T1label.setText("°C")
-            self.T2label.setText("K")
-        else:
-            self.T1label.setText("K")
-            self.T2label.setText("°C")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     app.exec()
-    echange()
