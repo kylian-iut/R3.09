@@ -5,7 +5,7 @@ import argparse
 import signal
 import subprocess
 
-port=80
+port=8000
 max_client=2
 clients = {}
 UPLOAD_DIR = "uploads"
