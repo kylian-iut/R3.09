@@ -1,6 +1,5 @@
 import subprocess
 import os
-import socket
 
 def execute(file, conn):
     ext = os.path.splitext(file)[-1]

@@ -207,7 +207,7 @@ class ConsoleWindow(QMainWindow):
         self.clear_button.clicked.connect(self.clear)
         layout.addWidget(self.clear_button, 1, 0)
 
-        self.toggle_button = QPushButton("Démarrer", self)
+        """ self.toggle_button = QPushButton("Démarrer", self)
         self.toggle_button.setStyleSheet("background-color: green; color: white;")
         self.toggle_button.clicked.connect(self.toggle_color)
         layout.addWidget(self.toggle_button, 1, 0)
@@ -220,7 +220,7 @@ class ConsoleWindow(QMainWindow):
 
         self.send_button = QPushButton("Envoyer", self)
         self.send_button.clicked.connect(self.send_message)
-        layout.addWidget(self.send_button, 1, 2)
+        layout.addWidget(self.send_button, 1, 2) """
 
         self.quit_button = QPushButton("Quitter", self)
         self.quit_button.clicked.connect(self.close)
