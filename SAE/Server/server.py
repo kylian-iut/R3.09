@@ -13,6 +13,9 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 shutdown_event = threading.Event()
 
 def execute(file, conn):
+    """
+        Fonction qui permet de détecter le langage du script, puis de l'executer et d'envoyer le résultat
+    """
     ext = os.path.splitext(file)[-1]
     try:
         if ext == ".py":
@@ -20,28 +23,60 @@ def execute(file, conn):
             result = subprocess.run(["python", file], capture_output=True, text=True, check=True)
         elif ext == ".c":
             print(f"\033[93mScript C va être executé\033[0m")
+            executable = os.path.splitext(file)[0]
+            subprocess.run(["gcc", file, "-o", executable], capture_output=True, text=True, check=True)
+            if os.name == "nt":  # Si sous Windows
+                executable += ".exe"
+            print(executable)
+            result = subprocess.run([executable], capture_output=True, text=True, check=True)
         elif ext == ".cpp":
             print(f"\033[93mScript C++ va être executé\033[0m")
+            executable = os.path.splitext(file)[0]
+            subprocess.run(["g++", file, "-o", executable], capture_output=True, text=True, check=True)
+            if os.name == "nt":  # Si sous Windows
+                executable += ".exe"
+            result = subprocess.run([executable], capture_output=True, text=True, check=True)
         elif ext == ".java":
             print(f"\033[93mScript Java va être executé\033[0m")
+            classname = os.path.basename(file).replace(".java", "")
+            subprocess.run(["javac", file], capture_output=True, text=True, check=True)
+            result = subprocess.run(["java", "-cp", os.path.dirname(file), classname], capture_output=True, text=True, check=True)
         else:
             print(f"\033[93mScript ne peut pas être executé\033[0m")
             return "err:lang"
+    except subprocess.CalledProcessError as err:
+        error_details=f"{err.stderr}"
+        print(error_details)
+        try:
+            conn.send('stderr'.encode())
+            conn.send(error_details.encode('utf-8'))
+        except Exception as send_error:
+            print(f"Erreur lors de l'envoi : {send_error}")
+
+    except Exception as err:
+        error_details=f"Erreur inattendue : {err}"
+        print(error_details)
+        conn.send('othererr'.encode())
+        conn.send(error_details.encode())
+    else:
         print("Sortie standard :")
         print(result.stdout)
+        conn.send('stdout'.encode())
         conn.send(result.stdout.encode())
-    except subprocess.CalledProcessError as err:
-        print(f"Erreur lors de l'exécution : {err}")
-        return "err:exec"
-    except Exception as err:
-        print(f"Erreur inattendue : {err}")
-        return "err:other"
+    finally:
+        return
 
 def handle_sigint(signal, frame):
+    """
+        Méthode qui permet d'arrêter le serveur avec le signal lié à CTRL+C
+    """
     print(f"\033[31mLe serveur s'arrête.\033[0m")
     shutdown_event.set()
 
 def session():
+    """
+        Méthode qui établie la connexion avec le Client
+    """
     global clients
     global max_client
     server_socket = socket.socket()
@@ -80,7 +115,10 @@ def session():
         print("\033[92mServeur arrêté proprement.\033[0m")
         cleanup_files()
  
-def cleanup_files():   
+def cleanup_files():
+    """
+        Méthode de nettoyage qui supprime les fichiers uploadés avant l'arrêt
+    """   
     try:
         files = os.listdir(UPLOAD_DIR)
         for file in files:
@@ -92,10 +130,12 @@ def cleanup_files():
         print(f"Erreur lors de la suppression des fichiers : {err}")
 
 def newclient(conn, address):
+    """
+        Méthode qui traite les commandes du client
+    """
     global clients
     try:
-        reply = "ack"
-        conn.send(reply.encode())
+        conn.send("ack".encode())
         while True:
             try:
                 data = conn.recv(1024).decode()
@@ -110,9 +150,9 @@ def newclient(conn, address):
                 continue
             except KeyboardInterrupt:
                 print(f"\033[31mLe serveur s'arrête.\033[0m")
-            
             if data == "file":
                 receive_file(conn, address)
+                conn.send("ack".encode())
             elif data == "ok":
                 if len(clients[conn]) > 0:
                     file=clients[conn][0]
@@ -136,7 +176,10 @@ def newclient(conn, address):
         if conn in clients:
             del clients[conn]
 
-def receive_file(conn, address): 
+def receive_file(conn, address):
+    """
+        Méthode qui permet de réceptionner le contenu d'un script puis de le sauvegarder dans un fichier dans le dossier uploads
+    """
     global clients
     try:
         conn.send("ack".encode())
@@ -167,6 +210,9 @@ def receive_file(conn, address):
         conn.send("erreur lors de la réception".encode())
 
 def main():
+    """
+        Méthode qui permet d'obtenir les instructions nécéssaire à l'initialisation du serveur
+    """
     global port
     parser = argparse.ArgumentParser()
     parser.add_argument('-p','--port',type=int,required=False,help="Spécifiez le port à utiliser.")
