@@ -64,7 +64,7 @@ def execute(file, conn):
             conn.send(result.stdout.encode())
     finally:
         if not status:
-            print(f"\033[92mExecution de '{os.path.basename(file)}' executé avec succès.\033[0m")
+            print(f"\033[92mExecution de '{os.path.basename(file)}' terminée avec succès.\033[0m")
             return
         else:
             return status
@@ -160,14 +160,19 @@ def newclient(conn, address):
                 if len(clients[conn]) > 0:
                     file=clients[conn][0]
                     state=execute(os.path.join(UPLOAD_DIR, file),conn)
-                    if conn.recv(1024).decode() == 'ack':
+                    try:
+                        result = conn.recv(1024).decode()
+                    except ConnectionResetError:
+                        print(f"\033[31mLa connexion au client a été perdue!\033[0m")
+                        return
+                    if result == 'ack':
                         if not state:
                             try:
                                 conn.send("bye".encode())
                                 print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
                             except ConnectionResetError:
                                 print(f"\033[31mLa connexion au client a été perdue!\033[0m")
-                                continue
+                                return
                         else:
                             print(state)
                             conn.send(state.encode())
