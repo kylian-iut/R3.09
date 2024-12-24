@@ -143,7 +143,7 @@ def echange(host,port,files,main, console_window):
             client_socket.close()
             return
     else:
-        print("\033[92mConnexion au serveur établie\033[0m")
+        print("\033[93mConnexion au serveur établie\033[0m")
         file_names = [main] + [item for item in file_names if item != main]
         print(file_names)
         for file_name in file_names:
@@ -172,6 +172,8 @@ def echange(host,port,files,main, console_window):
             out=client_socket.recv(1024).decode()
             console_window.print_message(f"{out} \n")
             print("\033[92mRésultat de l'execution reçu avec succès.\033[0m")
+            client_socket.send("ack".encode())
+            client_socket.settimeout(1)
             ecoute(client_socket)
 
 class Worker(QObject):
@@ -205,7 +207,7 @@ class ConsoleWindow(QMainWindow):
         self.clear_button.clicked.connect(self.clear)
         layout.addWidget(self.clear_button, 1, 0)
 
-        """ self.toggle_button = QPushButton("Démarrer", self)
+        self.toggle_button = QPushButton("Démarrer", self)
         self.toggle_button.setStyleSheet("background-color: green; color: white;")
         self.toggle_button.clicked.connect(self.toggle_color)
         layout.addWidget(self.toggle_button, 1, 0)
@@ -218,7 +220,7 @@ class ConsoleWindow(QMainWindow):
 
         self.send_button = QPushButton("Envoyer", self)
         self.send_button.clicked.connect(self.send_message)
-        layout.addWidget(self.send_button, 1, 2) """
+        layout.addWidget(self.send_button, 1, 2)
 
         self.quit_button = QPushButton("Quitter", self)
         self.quit_button.clicked.connect(self.close)

@@ -155,11 +155,16 @@ def newclient(conn, address):
                 if len(clients[conn]) > 0:
                     file=clients[conn][0]
                     state=execute(os.path.join(UPLOAD_DIR, file),conn)
-                    if not state:
-                        conn.send("bye".encode())
-                        print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
-                    else:
-                        conn.send(state.encode())
+                    if conn.recv(1024).decode() == 'ack':
+                        if not state:
+                            try:
+                                conn.send("bye".encode())
+                                print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
+                            except ConnectionResetError:
+                                print(f"\033[31mLa connexion au client a été perdue!\033[0m")
+                                continue
+                        else:
+                            conn.send(state.encode())
                 else:
                     conn.send("ack".encode())
             elif data == "bye":
