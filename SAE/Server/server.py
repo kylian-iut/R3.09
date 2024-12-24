@@ -47,11 +47,8 @@ def execute(file, conn):
     except subprocess.CalledProcessError as err:
         error_details=f"{err.stderr}"
         print(error_details)
-        try:
-            conn.send('stderr'.encode())
-            conn.send(error_details.encode('utf-8'))
-        except Exception as send_error:
-            print(f"Erreur lors de l'envoi : {send_error}")
+        conn.send('stderr'.encode())
+        conn.send(error_details.encode('utf-8'))
 
     except Exception as err:
         error_details=f"Erreur inattendue : {err}"
@@ -64,6 +61,7 @@ def execute(file, conn):
         conn.send('stdout'.encode())
         conn.send(result.stdout.encode())
     finally:
+        print(f"\033[92mExecution de '{file}' executé avec succès.\033[0m")
         return
 
 def handle_sigint(signal, frame):
@@ -157,9 +155,9 @@ def newclient(conn, address):
                 if len(clients[conn]) > 0:
                     file=clients[conn][0]
                     state=execute(os.path.join(UPLOAD_DIR, file),conn)
-                    print(state)
                     if not state:
-                        conn.send("ack".encode())
+                        conn.send("bye".encode())
+                        print(f"\033[93mFermeture de la connexion avec {address}\033[0m")
                     else:
                         conn.send(state.encode())
                 else:

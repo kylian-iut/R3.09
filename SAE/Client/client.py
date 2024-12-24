@@ -143,6 +143,7 @@ def echange(host,port,files,main, console_window):
             client_socket.close()
             return
     else:
+        print("\033[92mConnexion au serveur établie\033[0m")
         file_names = [main] + [item for item in file_names if item != main]
         print(file_names)
         for file_name in file_names:
@@ -166,8 +167,12 @@ def echange(host,port,files,main, console_window):
                 console_window.text_color(QColor(255, 0, 0))
             elif end_status == "othererr":
                 console_window.text_color(QColor(255, 165, 0))
+            else:
+                console_window.text_color(QColor(255, 255, 255))
             out=client_socket.recv(1024).decode()
             console_window.print_message(f"{out} \n")
+            print("\033[92mRésultat de l'execution reçu avec succès.\033[0m")
+            ecoute(client_socket)
 
 class Worker(QObject):
     # Signal pour envoyer un message d'erreur
@@ -300,6 +305,7 @@ class EditorWindow(QWidget):
     def __init__(self, file_name, parent=None):
         super().__init__()
         
+        self.resize(550, 330)
         self.file_name = file_name
         self.parent = parent
         self.setWindowTitle(f"Édition de {file_name}")
@@ -332,7 +338,7 @@ class CreateWindow(QWidget):
 
         self.parent=parent
         self.setWindowTitle("Nouveau fichier")
-        self.resize(300, 200)
+        self.resize(550, 330)
 
         layout = QGridLayout()
 
