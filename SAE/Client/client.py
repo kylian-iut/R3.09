@@ -20,6 +20,8 @@ from PyQt6.QtWidgets import (
     QAbstractItemView,
     QFileDialog,
     QTextEdit,
+    QRadioButton,
+    QButtonGroup,
 )
 
 host = 'localhost'
@@ -122,7 +124,6 @@ def echange(host,port,files,main, console_window):
         Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter
     """
     global window
-    console_window.clear()
     file_names = list(files.keys())
     client_socket = socket.socket()
     client_socket.settimeout(1)
@@ -259,6 +260,73 @@ class ConsoleWindow(QMainWindow):
     def clear(self):
         self.text_edit.clear()
 
+class LanguageWindow(QWidget):
+    def __init__(self, files, file_name, parent=None):
+        super().__init__()
+        self.file_name=file_name
+        self.FILES=files
+        self.parent=parent
+
+        self.setWindowTitle("Choisir le langage d'exécution")
+        self.setFixedSize(350, 200)
+
+        grid_layout = QGridLayout()
+
+        self.text_label = QLabel(f"Comment voulez-vous exécuter {file_name} ?")
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.text_label.setWordWrap(True)
+        self.text_label.setMaximumHeight(40)
+        self.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        grid_layout.addWidget(self.text_label, 0, 0, 2, 3)
+
+        self.button_group = QButtonGroup()
+
+        self.radio_python = QRadioButton("Python")
+        self.button_group.addButton(self.radio_python)
+        grid_layout.addWidget(self.radio_python, 2, 1, 1, 2)
+
+        self.radio_java = QRadioButton("Java")
+        self.button_group.addButton(self.radio_java)
+        grid_layout.addWidget(self.radio_java, 3, 1, 1, 2)
+
+        self.radio_c = QRadioButton("C")
+        grid_layout.addWidget(self.radio_c, 4, 1, 1, 2)
+        self.button_group.addButton(self.radio_c)
+
+        self.radio_cpp = QRadioButton("C++")
+        self.button_group.addButton(self.radio_cpp)        
+        grid_layout.addWidget(self.radio_cpp, 5, 1, 1, 2)        
+
+        self.button_enregistrer = QPushButton("Enregistrer")
+        self.button_enregistrer.clicked.connect(self.enregistrer)
+        grid_layout.addWidget(self.button_enregistrer, 6, 0, 1, 2)
+
+        self.button_annuler = QPushButton("Annuler")
+        self.button_annuler.clicked.connect(self.close)
+        grid_layout.addWidget(self.button_annuler, 6, 2)
+
+        self.setLayout(grid_layout)
+
+    def enregistrer(self):
+        selected_language = None
+        old_name=self.file_name
+        tempfiles=self.FILES.copy() # cette manière permet d'éviter la façon dont Python gère les objets mutables. Sinon avec seulement =, les deux variables pointent vers le même objet en mémoire
+        if self.radio_python.isChecked():
+            selected_language = "Python"
+            self.file_name=old_name.split('.')[0]+".py"
+        elif self.radio_java.isChecked():
+            selected_language = "Java"
+            self.file_name=old_name.split('.')[0]+".java"
+        elif self.radio_c.isChecked():
+            selected_language = "C"
+            self.file_name=old_name.split('.')[0]+".c"
+        elif self.radio_cpp.isChecked():
+            selected_language = "C++"
+            self.file_name=old_name.split('.')[0]+".cpp"
+        if selected_language:
+            tempfiles[self.file_name] = tempfiles.pop(old_name)
+            self.parent.start_echange(tempfiles, self.file_name)
+            self.close()
 
 class RenameWindow(QWidget):
     def __init__(self, file_name, parent=None):
@@ -536,13 +604,22 @@ class MainWindow(QMainWindow):
                     if self.console_window is None:
                         self.console_window = ConsoleWindow()
                     self.console_window.setWindowModality(Qt.WindowModality.ApplicationModal)
+                    self.console_window.clear()
                     self.console_window.show()
-                    echange(self.serv.text(),self.port.text(),self.files,selected_items[0].text(),self.console_window)
+                    if selected_items[0].text().split('.')[-1] not in ["py","java", "c", "cpp"]:
+                        self.language_window = LanguageWindow(self.files, selected_items[0].text(), self)
+                        self.language_window.setWindowModality(Qt.WindowModality.ApplicationModal)
+                        self.language_window.show()
+                    else:
+                        self.start_echange(self.files, selected_items[0].text())
                 else:
                     self.show_error("Numéro du port incorrect !")
             else:
                 self.show_error("Adresse du serveur incorrect !")
     
+    def start_echange(self, files, file_name):
+        echange(self.serv.text(), self.port.text(), files, file_name, self.console_window)
+
     def show_error(self, message):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Critical)
@@ -561,18 +638,14 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication([])
 
-    # Fenêtre principale
     window = MainWindow()
 
-    # Thread de travail
     worker_thread = QThread()
     worker = Worker()
     worker.moveToThread(worker_thread)
 
-    # Lancement de la tâche en arrière-plan
     worker_thread.started.connect(worker.run)
     worker_thread.start()
 
-    # Affichage de la fenêtre principale
     window.show()
     app.exec()

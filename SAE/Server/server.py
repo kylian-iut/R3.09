@@ -17,6 +17,7 @@ def execute(file, conn):
         Fonction qui permet de détecter le langage du script, puis de l'executer et d'envoyer le résultat
     """
     ext = os.path.splitext(file)[-1]
+    status=None
     try:
         if ext == ".py":
             print(f"\033[93mScript python va être executé\033[0m")
@@ -43,7 +44,7 @@ def execute(file, conn):
             result = subprocess.run(["java", "-cp", os.path.dirname(file), classname], capture_output=True, text=True, check=True)
         else:
             print(f"\033[93mScript ne peut pas être executé\033[0m")
-            return "err:lang"
+            status = "err:lang"
     except subprocess.CalledProcessError as err:
         error_details=f"{err.stderr}"
         print(error_details)
@@ -56,13 +57,17 @@ def execute(file, conn):
         conn.send('othererr'.encode())
         conn.send(error_details.encode())
     else:
-        print("Sortie standard :")
-        print(result.stdout)
-        conn.send('stdout'.encode())
-        conn.send(result.stdout.encode())
+        if not status:
+            print("Sortie standard :")
+            print(result.stdout)
+            conn.send('stdout'.encode())
+            conn.send(result.stdout.encode())
     finally:
-        print(f"\033[92mExecution de '{file}' executé avec succès.\033[0m")
-        return
+        if not status:
+            print(f"\033[92mExecution de '{os.path.basename(file)}' executé avec succès.\033[0m")
+            return
+        else:
+            return status
 
 def handle_sigint(signal, frame):
     """
@@ -164,6 +169,7 @@ def newclient(conn, address):
                                 print(f"\033[31mLa connexion au client a été perdue!\033[0m")
                                 continue
                         else:
+                            print(state)
                             conn.send(state.encode())
                 else:
                     conn.send("ack".encode())
