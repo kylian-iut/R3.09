@@ -274,6 +274,7 @@ class RenameWindow(QWidget):
 
         self.new_name_input = QLineEdit()
         self.new_name_input.setText(self.old_name)
+        self.new_name_input.returnPressed.connect(self.enregistrer)
         layout.addWidget(self.new_name_input, 0, 0, 1, 2)
 
         self.save_button = QPushButton("Enregistrer")
@@ -349,6 +350,7 @@ class CreateWindow(QWidget):
 
         self.file_name_input = QLineEdit()
         self.file_name_input.setPlaceholderText("Nom du fichier")
+        self.file_name_input.returnPressed.connect(self.enregistrer)
         layout.addWidget(self.file_name_input, 1, 0)
 
         self.save_button = QPushButton("Enregistrer")
