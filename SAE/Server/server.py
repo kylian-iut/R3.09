@@ -47,6 +47,7 @@ def execute(file, conn):
             status = "err:lang"
     except subprocess.CalledProcessError as err:
         error_details=f"{err.stderr}"
+        print("Erreur standard :")
         print(error_details)
         conn.send('stderr'.encode())
         conn.send(error_details.encode('utf-8'))

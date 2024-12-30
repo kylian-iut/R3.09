@@ -30,168 +30,171 @@ from PyQt6.QtWidgets import (
 host = 'localhost'
 port = '8000'
 
-def ecoute(client_socket):
-    """
-        Méthode qui permet d'obtenir et de traiter un réponse du serveur
-    """
-    try:
-        reply = client_socket.recv(1024).decode()
-        if not reply:
-            return
-        print(f"\033[92m{reply}\033[0m")
-        
-        if reply == "bye":
-            print("\033[93mConnexion avec le serveur terminée\033[0m")
-            client_socket.close()
-            return "bye"
-        elif reply == "arret":
-            print("\033[93mLe serveur va s'arrêter\033[0m")
-            reply = "bye"
-            try:
-                client_socket.send(reply.encode())
-            except OSError:
-                return
-        elif reply == "occuped":
-            print("\033[93mLe serveur est occupé\033[0m")
-            client_socket.close()
-            return "occuped"
-        elif reply.startswith("err:lang"):
-            client_socket.close()
-            return "err:lang"
-        else:
-            reply = ""
-            try:
-                client_socket.send(reply.encode())
-            except OSError:
-                return
-    except ConnectionResetError:
-        print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
-        client_socket.close()
-        return
-    except TimeoutError:
-        print(f"\033[31mLa connexion au serveur a échoué!\033[0m")
-        client_socket.close()
-        return
-    except OSError:
-        print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
-        client_socket.close()
-        return
-
-def envoie_fichier(client_socket, file_name, data):
-    """
-        Méthode qui permet l'envoie d'un script au serveur
-    """
-    file_size = len(data)
-    print(f"{file_name} : {file_size} octets")
-
-    try:
-        client_socket.send("file".encode())
-        client_socket.recv(1024)
-
-        client_socket.send(file_name.encode())
-        client_socket.recv(1024)
-
-        client_socket.send(str(file_size).encode())
-        client_socket.recv(1024)
-
-        print("Téléversement...")
-        client_socket.sendall(data.encode("utf-8"))
-        client_socket.recv(1024)
-        print("\033[92mFichier envoyé avec succès.\033[0m")
-    except Exception as err:
-        print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
-
-def envoie(client_socket, message, data=None):
-    """
-        Méthode qui gère l'envoie de commandes au serveur
-    """
-    global window
-    server_status = ecoute(client_socket)
-    if server_status == 'occuped':
-        window.show_error(f"Serveur occupé!")
-        return
-    elif server_status == "err:lang":
-        window.show_error(f"Serveur ne peut pas executer!")
-        return
-    if message.startswith("fichier:"):
-        file_name = message.split(":", 1)[1].strip()
-        envoie_fichier(client_socket, file_name, data)
-    else:
-        try:
-            client_socket.send(message.encode())
-            if ecoute(client_socket) == 'bye':
-                return
-        except (ConnectionResetError, OSError):
-            window.show_error(f"Le serveur a fermé la connexion!")
-            client_socket.close()
-            return
-
-def echange(host,port,files,main, console_window):
-    """
-        Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter
-    """
-    global window
-    file_names = list(files.keys())
-    client_socket = socket.socket()
-    client_socket.settimeout(1)
-    try:
-        client_socket.connect((host, int(port)))
-    except ConnectionRefusedError:
-        window.show_error(f"La connexion au serveur a été refusée!")
-        client_socket.close()
-        return
-    except OSError:
-        try:
-            window.show_error(f"Serveur injoignable!")
-            client_socket.close()
-            console_window.close()
-            return
-        except KeyboardInterrupt:
-            window.show_error(f"Connexion annulée!")
-            client_socket.close()
-            return
-    else:
-        print("\033[93mConnexion au serveur établie\033[0m")
-        file_names = [main] + [item for item in file_names if item != main]
-        print(file_names)
-        for file_name in file_names:
-            print(file_name)
-            data=files[file_name]
-            t1 = threading.Thread(target=envoie, args=[client_socket, "fichier:" + file_name, data])
-            t1.start()
-            try:
-                t1.join()
-            except KeyboardInterrupt:
-                client_socket.send("bye".encode())
-                ecoute(client_socket)
-                client_socket.close()
-                return
-        client_socket.send("ok".encode())
-        client_socket.settimeout(None)
-        start_status=client_socket.recv(1024).decode()
-        if start_status == "ack":
-            end_status=client_socket.recv(1024).decode()
-            if end_status == "stderr":
-                console_window.text_color(QColor(255, 0, 0))
-            elif end_status == "othererr":
-                console_window.text_color(QColor(255, 165, 0))
-            else:
-                console_window.text_color(QColor(255, 255, 255))
-            out=client_socket.recv(1024).decode()
-            console_window.print_message(f"{out} \n")
-            print("\033[92mRésultat de l'execution reçu avec succès.\033[0m")
-            client_socket.send("ack".encode())
-            client_socket.settimeout(1)
-            ecoute(client_socket)
-
 class WorkerThread(QThread):
-    def __init__(self):
+    error_signal = pyqtSignal(str)
+
+    def __init__(self, host, port, files, main, console_window):
         super().__init__()
 
+        self.host=host
+        self.port=port
+        self.files=files
+        self.main=main
+        self.console_window=console_window
+    
     def run(self):
-        """Simuler une tâche longue (par exemple, une requête au serveur)"""
-        time.sleep(5)  # Simule un traitement long de 5 secondes (à remplacer par la tâche réelle)
-        print("Traitement terminé")
+        self.echange(self.host,self.port,self.files,self.main,self.console_window)
+
+    def ecoute(self, client_socket):
+        """
+            Méthode qui permet d'obtenir et de traiter un réponse du serveur
+        """
+        try:
+            reply = client_socket.recv(1024).decode()
+            if not reply:
+                return
+            print(f"\033[92m{reply}\033[0m")
+            
+            if reply == "bye":
+                print("\033[93mConnexion avec le serveur terminée\033[0m")
+                client_socket.close()
+                return "bye"
+            elif reply == "arret":
+                print("\033[93mLe serveur va s'arrêter\033[0m")
+                reply = "bye"
+                try:
+                    client_socket.send(reply.encode())
+                except OSError:
+                    return
+            elif reply == "occuped":
+                print("\033[93mLe serveur est occupé\033[0m")
+                client_socket.close()
+                return "occuped"
+            elif reply.startswith("err:lang"):
+                client_socket.close()
+                return "err:lang"
+            else:
+                reply = ""
+                try:
+                    client_socket.send(reply.encode())
+                except OSError:
+                    return
+        except ConnectionResetError:
+            print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
+            client_socket.close()
+            return
+        except TimeoutError:
+            print(f"\033[31mLa connexion au serveur a échoué!\033[0m")
+            client_socket.close()
+            return
+        except OSError:
+            print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
+            client_socket.close()
+            return
+
+    def envoie_fichier(self, client_socket, file_name, data):
+        """
+            Méthode qui permet l'envoie d'un script au serveur
+        """
+        file_size = len(data)
+        print(f"{file_name} : {file_size} octets")
+
+        try:
+            client_socket.send("file".encode())
+            client_socket.recv(1024)
+
+            client_socket.send(file_name.encode())
+            client_socket.recv(1024)
+
+            client_socket.send(str(file_size).encode())
+            client_socket.recv(1024)
+
+            print("Téléversement...")
+            client_socket.sendall(data.encode("utf-8"))
+            client_socket.recv(1024)
+            print("\033[92mFichier envoyé avec succès.\033[0m")
+        except Exception as err:
+            print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
+
+    def envoie(self, client_socket, message, data=None):
+        """
+            Méthode qui gère l'envoie de commandes au serveur
+        """
+        server_status = self.ecoute(client_socket)
+        if server_status == 'occuped':
+            self.error_signal.emit(f"Serveur occupé!")
+            return
+        elif server_status == "err:lang":
+            self.error_signal.emit(f"Serveur ne peut pas executer!")
+            return
+        if message.startswith("fichier:"):
+            file_name = message.split(":", 1)[1].strip()
+            self.envoie_fichier(client_socket, file_name, data)
+        else:
+            try:
+                client_socket.send(message.encode())
+                if self.ecoute(client_socket) == 'bye':
+                    return
+            except (ConnectionResetError, OSError):
+                window.show_error(f"Le serveur a fermé la connexion!")
+                client_socket.close()
+                return
+
+    def echange(self, host, port,files,main, console_window):
+        """
+            Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter
+        """
+        file_names = list(files.keys())
+        client_socket = socket.socket()
+        client_socket.settimeout(1)
+        try:
+            client_socket.connect((host, int(port)))
+        except ConnectionRefusedError:
+            client_socket.close()
+            self.error_signal.emit(f"La connexion au serveur a été refusée!")
+            return
+        except OSError:
+            try:
+                client_socket.close()
+                self.error_signal.emit(f"Serveur injoignable!")
+                return
+            except KeyboardInterrupt:
+                client_socket.close()
+                self.error_signal.emit(f"Connexion annulée!")
+                return
+        else:
+            print("\033[93mConnexion au serveur établie\033[0m")
+            file_names = [main] + [item for item in file_names if item != main]
+            print(file_names)
+            for file_name in file_names:
+                print(file_name)
+                data=files[file_name]
+                t1 = threading.Thread(target=self.envoie, args=[client_socket, "fichier:" + file_name, data])
+                t1.start()
+                try:
+                    t1.join()
+                except KeyboardInterrupt:
+                    client_socket.send("bye".encode())
+                    self.ecoute(client_socket)
+                    client_socket.close()
+                    return
+            client_socket.send("ok".encode())
+            client_socket.settimeout(None)
+            start_status=client_socket.recv(1024).decode()
+            if start_status == "ack":
+                end_status=client_socket.recv(1024).decode()
+                if end_status == "stderr":
+                    console_window.text_color(QColor(255, 0, 0))
+                elif end_status == "othererr":
+                    console_window.text_color(QColor(255, 165, 0))
+                else:
+                    console_window.text_color(QColor(255, 255, 255))
+                out=client_socket.recv(1024).decode()
+                console_window.print_message(f"{out} \n")
+                print("\033[92mRésultat de l'execution reçu avec succès.\033[0m")
+                client_socket.send("ack".encode())
+                client_socket.settimeout(1)
+                self.ecoute(client_socket)
 
 class Worker(QObject):
     # Signal pour envoyer un message d'erreur
@@ -205,7 +208,7 @@ class Worker(QObject):
         self.error_signal.emit("Script ne peut pas être exécuté")
 
 class ConsoleWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, host, port, files, main):
         super().__init__()
 
         self.setWindowTitle("Console")
@@ -259,11 +262,23 @@ class ConsoleWindow(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        self.worker_thread = WorkerThread()
+        self.worker_thread = WorkerThread(host,port,files,main,self)
+        self.worker_thread.error_signal.connect(self.handle_server_error)
         self.start_timer()
         self.worker_thread.start()
         self.worker_thread.finished.connect(self.stop_timer)
 
+    def handle_server_error(self, error_message):
+        """ Gérer l'erreur de serveur : arrêter le chronomètre et afficher un pop-up. """
+        self.stop_timer()  # Arrêter le chronomètre
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Icon.Critical)
+        msg.setWindowTitle("Erreur")
+        msg.setText(error_message)
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg.exec()
+        self.close()
+    
     def start_timer(self):
         """ Démarre ou redémarre le chronomètre. """
         self.time_elapsed = QTime(0, 0)  # Réinitialiser le temps
@@ -355,7 +370,6 @@ class LanguageWindow(QWidget):
         self.setLayout(grid_layout)
     
     def annuler(self):
-        self.parent.console_window.close()
         self.close()
 
     def enregistrer(self):
@@ -376,7 +390,7 @@ class LanguageWindow(QWidget):
             self.file_name=old_name.split('.')[0]+".cpp"
         if selected_language:
             tempfiles[self.file_name] = tempfiles.pop(old_name)
-            self.parent.start_echange(tempfiles, self.file_name)
+            self.parent.start_console(tempfiles, self.file_name)
             self.close()
 
 class RenameWindow(QWidget):
@@ -652,23 +666,22 @@ class MainWindow(QMainWindow):
         if len(selected_items) == 1:
             if bool(re.match(ipv4_regex, self.serv.text()) or re.match(ipv6_regex, self.serv.text()) or re.match(hostname_regex, self.serv.text())):
                 if bool(re.match(port_regex, self.port.text())):
-                    self.console_window = ConsoleWindow()
-                    self.console_window.setWindowModality(Qt.WindowModality.ApplicationModal)
-                    self.console_window.clear()
-                    self.console_window.show()
                     if selected_items[0].text().split('.')[-1] not in ["py","java", "c", "cpp"]:
                         self.language_window = LanguageWindow(self.files, selected_items[0].text(), self)
                         self.language_window.setWindowModality(Qt.WindowModality.ApplicationModal)
                         self.language_window.show()
                     else:
-                        self.start_echange(self.files, selected_items[0].text())
+                        self.start_console(self.files, selected_items[0].text())
                 else:
                     self.show_error("Numéro du port incorrect !")
             else:
                 self.show_error("Adresse du serveur incorrect !")
     
-    def start_echange(self, files, file_name):
-        echange(self.serv.text(), self.port.text(), files, file_name, self.console_window)
+    def start_console(self, files, file_name):
+        self.console_window = ConsoleWindow(self.serv.text(),self.port.text(),files,file_name)
+        self.console_window.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.console_window.clear()
+        self.console_window.show()
 
     def show_error(self, message):
         msg = QMessageBox(self)
