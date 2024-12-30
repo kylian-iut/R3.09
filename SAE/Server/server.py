@@ -92,7 +92,7 @@ def session():
         return
     server_socket.listen()
     server_socket.settimeout(1)
-    print("Serveur démarré et en attente de connexions...")
+    print(f"Serveur démarré sur le port {port} et en attente de connexions...")
 
     try:
         while not shutdown_event.is_set():
@@ -232,7 +232,11 @@ def main():
     parser.add_argument('-p','--port',type=int,required=False,help="Spécifiez le port à utiliser.")
     args = parser.parse_args()
     if args.port != None:
-        port = args.port
+        if args.port >= 0 and args.port <= 65535:
+            port = args.port
+        else:
+            print(f"\033[31mLe port doit être entre 0 et 65535!\033[0m")
+            return
     
     signal.signal(signal.SIGINT, handle_sigint)
     

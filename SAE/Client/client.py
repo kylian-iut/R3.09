@@ -69,6 +69,10 @@ def ecoute(client_socket):
         print(f"\033[31mLa connexion au serveur a échoué!\033[0m")
         client_socket.close()
         return
+    except OSError:
+        print(f"\033[31mLa connexion au serveur a été perdue!\033[0m")
+        client_socket.close()
+        return
 
 def envoie_fichier(client_socket, file_name, data):
     """
@@ -302,15 +306,19 @@ class LanguageWindow(QWidget):
         grid_layout.addWidget(self.button_enregistrer, 6, 0, 1, 2)
 
         self.button_annuler = QPushButton("Annuler")
-        self.button_annuler.clicked.connect(self.close)
+        self.button_annuler.clicked.connect(self.annuler)
         grid_layout.addWidget(self.button_annuler, 6, 2)
 
         self.setLayout(grid_layout)
+    
+    def annuler(self):
+        self.parent.console_window.close()
+        self.close()
 
     def enregistrer(self):
         selected_language = None
         old_name=self.file_name
-        tempfiles=self.FILES.copy() # cette manière permet d'éviter la façon dont Python gère les objets mutables. Sinon avec seulement =, les deux variables pointent vers le même objet en mémoire
+        tempfiles=self.FILES.copy() # cette manière permet de contourner la façon dont Python gère les objets mutables. Puisque avec seulement =, les deux variables pointent vers le même objet en mémoire
         if self.radio_python.isChecked():
             selected_language = "Python"
             self.file_name=old_name.split('.')[0]+".py"
