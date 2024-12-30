@@ -2,9 +2,10 @@ import socket
 import threading
 import os
 import re
+import time
 
 from PyQt6.QtGui import QFont, QColor
-from PyQt6.QtCore import Qt, pyqtSignal, QObject, QThread
+from PyQt6.QtCore import Qt, pyqtSignal, QObject, QThread, QTimer, QTime
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
@@ -22,6 +23,8 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QRadioButton,
     QButtonGroup,
+    QSpacerItem,
+    QSizePolicy,
 )
 
 host = 'localhost'
@@ -181,6 +184,15 @@ def echange(host,port,files,main, console_window):
             client_socket.settimeout(1)
             ecoute(client_socket)
 
+class WorkerThread(QThread):
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        """Simuler une tâche longue (par exemple, une requête au serveur)"""
+        time.sleep(5)  # Simule un traitement long de 5 secondes (à remplacer par la tâche réelle)
+        print("Traitement terminé")
+
 class Worker(QObject):
     # Signal pour envoyer un message d'erreur
     error_signal = pyqtSignal(str)
@@ -231,9 +243,35 @@ class ConsoleWindow(QMainWindow):
         self.quit_button.clicked.connect(self.close)
         layout.addWidget(self.quit_button, 1, 3)
 
+        spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        layout.addItem(spacer, 1, 2)  # Placer l'espacement entre les deux bouton
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_timer)      
+        self.time_elapsed = QTime(0, 0)  # Temps initial
+        self.time_label = QTextEdit(self)
+        self.time_label.setReadOnly(True)
+        self.time_label.setFont(font)
+        self.time_label.setFixedSize(120, 30)
+        layout.addWidget(self.time_label, 1, 1, 1, 2)
+
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+        self.worker_thread = WorkerThread()
+        self.start_timer()
+        self.worker_thread.start()
+        self.worker_thread.finished.connect(self.stop_timer)
+
+    def start_timer(self):
+        """ Démarre ou redémarre le chronomètre. """
+        self.time_elapsed = QTime(0, 0)  # Réinitialiser le temps
+        self.timer.start(10)  # Démarrer le timer (actualise toutes les 10 ms)
+        self.time_label.setPlainText(f"{self.time_elapsed.toString('hh:mm:ss')}.{self.time_elapsed.msec():03d}")
+
+    def stop_timer(self):
+        self.timer.stop()
 
     def toggle_color(self):
         current_color = self.toggle_button.styleSheet()
@@ -254,6 +292,11 @@ class ConsoleWindow(QMainWindow):
         if message:
             self.text_edit.append(f"> {message}")
             self.line_edit.clear()
+
+    def update_timer(self):
+        """ Met à jour le temps écoulé toutes les secondes. """
+        self.time_elapsed = self.time_elapsed.addMSecs(10)
+        self.time_label.setPlainText(f"{self.time_elapsed.toString('hh:mm:ss')}.{self.time_elapsed.msec():03d}")
 
     def text_color(self, color):
         self.text_edit.setTextColor(color)
@@ -609,8 +652,7 @@ class MainWindow(QMainWindow):
         if len(selected_items) == 1:
             if bool(re.match(ipv4_regex, self.serv.text()) or re.match(ipv6_regex, self.serv.text()) or re.match(hostname_regex, self.serv.text())):
                 if bool(re.match(port_regex, self.port.text())):
-                    if self.console_window is None:
-                        self.console_window = ConsoleWindow()
+                    self.console_window = ConsoleWindow()
                     self.console_window.setWindowModality(Qt.WindowModality.ApplicationModal)
                     self.console_window.clear()
                     self.console_window.show()

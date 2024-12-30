@@ -21,7 +21,7 @@ def execute(file, conn):
     try:
         if ext == ".py":
             print(f"\033[93mScript python va être executé\033[0m")
-            result = subprocess.run(["python", file], capture_output=True, text=True, check=True)
+            result = subprocess.run(["python3", file], capture_output=True, text=True, check=True)
         elif ext == ".c":
             print(f"\033[93mScript C va être executé\033[0m")
             executable = os.path.splitext(file)[0]
