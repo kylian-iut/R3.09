@@ -615,7 +615,14 @@ class CreateWindow(QWidget):
         self.close()
 
 class MainWindow(QMainWindow):
+    """Fenêtre principale de l'interface
+
+    Args:
+        QMainWindow (None): objet QMainWindow
+    """
     def __init__(self):
+        """Méthode d'initialisation de l'interface de la fenêtre principale
+        """
         super().__init__()
         global port
         global host
@@ -685,6 +692,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     def importe(self):
+        """Action du bouton qui permet d'importer des scripts dans la liste
+        """
         # Ouvre l'explorateur natif pour sélectionner des fichiers
         selected_files, _ = QFileDialog.getOpenFileNames(
             self,
@@ -718,6 +727,8 @@ class MainWindow(QMainWindow):
                 
 
     def edit(self):
+        """Action du bouton d'édition du script
+        """
         selected_items = self.listWidget.selectedItems()
         if len(selected_items) == 1:
             file_name=selected_items[0].text()
@@ -726,11 +737,15 @@ class MainWindow(QMainWindow):
             self.editor_window.show()
     
     def new(self):
+        """Action du bouton d'ajout d'un script
+        """
         self.create_window = CreateWindow(self)
         self.create_window.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.create_window.show()
     
     def rename(self):
+        """Action du bouton de renonomage du script
+        """
         selected_items = self.listWidget.selectedItems()
         if len(selected_items) == 1:
             file_name=selected_items[0].text()
@@ -739,6 +754,8 @@ class MainWindow(QMainWindow):
             self.rename_window.show()
     
     def suppr(self):
+        """Action du bouton de suppression d'un ou plusieurs scripts
+        """
         selected_items = self.listWidget.selectedItems()
         if len(selected_items) == 1:
             self.listWidget.takeItem(self.listWidget.row(selected_items[0]))
@@ -757,6 +774,8 @@ class MainWindow(QMainWindow):
 
     
     def upload(self):
+        """Action du bouton Téléverser ; On vérifie les champs adresse et port et on prépare l'échange avec le serveur
+        """
         selected_items = self.listWidget.selectedItems() # Le fichier sélectionné sera main
         # Regex pour IPv4, IPv6, Hostname et Port réseau
         ipv4_regex = r'^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$'
@@ -779,12 +798,23 @@ class MainWindow(QMainWindow):
                 self.show_error("Adresse du serveur incorrect !")
     
     def start_console(self, files, file_name):
+        """Démarrage de l'instance pour la console
+
+        Args:
+            files (list): la liste de touss fichiers [nom:data]
+            file_name (str): le nom du fichier qui devra être executé, donc envoyé en premier
+        """
         self.console_window = ConsoleWindow(self.serv.text(),self.port.text(),files,file_name)
         self.console_window.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.console_window.clear()
         self.console_window.show()
 
     def show_error(self, message):
+        """Boite de dialogue du message d'erreur
+
+        Args:
+            message (str): détail de l'erreur
+        """
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Critical)
         msg.setWindowTitle("Erreur")
@@ -793,6 +823,8 @@ class MainWindow(QMainWindow):
         msg.exec()
         
     def help(self):
+        """Action du bouton Aide ? ; Affiche une information
+        """
         msg = QMessageBox(self)
         msg.setWindowTitle("Aide")
         msg.setText("Importez des fichiers, puis sélectionnez le fichier ciblé pour effectuer une action dessus sur la droite. Si vous choisissez Téléverser, le fichier sélectionné sera le script principal")

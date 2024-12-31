@@ -13,8 +13,14 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 shutdown_event = threading.Event()
 
 def execute(file, conn):
-    """
-        Fonction qui permet de détecter le langage du script, puis de l'executer et d'envoyer le résultat
+    """Fonction qui permet de détecter le langage du script, puis de l'executer et d'envoyer le résultat
+
+    Args:
+        file (str): fichier qui doit être executé
+        conn (socket): objet socket du serveur
+
+    Returns:
+        str: peut retourner err:lang si le langage n'est pas supporté
     """
     ext = os.path.splitext(file)[-1]
     status=None
@@ -71,15 +77,17 @@ def execute(file, conn):
             return status
 
 def handle_sigint(signal, frame):
-    """
-        Méthode qui permet d'arrêter le serveur avec le signal lié à CTRL+C
+    """Méthode qui permet d'arrêter le serveur avec le signal lié à CTRL+C
+
+    Args:
+        signal (None): objet signal
+        frame (int): indice de la position arrêté
     """
     print(f"\033[31mLe serveur s'arrête.\033[0m")
     shutdown_event.set()
 
 def session():
-    """
-        Méthode qui établie la connexion avec le Client
+    """Méthode qui établie la connexion avec le Client
     """
     global clients
     global max_client
@@ -120,9 +128,8 @@ def session():
         cleanup_files()
  
 def cleanup_files():
-    """
-        Méthode de nettoyage qui supprime les fichiers uploadés avant l'arrêt
-    """   
+    """Méthode de nettoyage qui supprime les fichiers uploadés avant l'arrêt
+    """  
     try:
         files = os.listdir(UPLOAD_DIR)
         for file in files:
@@ -134,8 +141,11 @@ def cleanup_files():
         print(f"Erreur lors de la suppression des fichiers : {err}")
 
 def newclient(conn, address):
-    """
-        Méthode qui traite les commandes du client
+    """Méthode qui traite les commandes du client
+
+    Args:
+        conn (socket): objet socket du serveur
+        address (str): adresse du client
     """
     global clients
     try:
@@ -192,8 +202,11 @@ def newclient(conn, address):
             del clients[conn]
 
 def receive_file(conn, address):
-    """
-        Méthode qui permet de réceptionner le contenu d'un script puis de le sauvegarder dans un fichier dans le dossier uploads
+    """Méthode qui permet de réceptionner le contenu d'un script puis de le sauvegarder dans un fichier dans le dossier uploads
+
+    Args:
+        conn (socket): objet socket du serveur
+        address (str): adresse du client
     """
     global clients
     try:
@@ -225,8 +238,7 @@ def receive_file(conn, address):
         conn.send("erreur lors de la réception".encode())
 
 def main():
-    """
-        Méthode qui permet d'obtenir les instructions nécéssaire à l'initialisation du serveur
+    """Méthode qui permet d'obtenir les instructions nécéssaire à l'initialisation du serveur
     """
     global port
     parser = argparse.ArgumentParser()

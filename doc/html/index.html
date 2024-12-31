@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="prev" title="Client Module" href="client.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="src" href="modules.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Server Module - Documentation SAE3.2</title>
+        <title>Documentation SAE3.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation SAE3.2 </div></a>
+      <a href="#"><div class="brand">Documentation SAE3.2 </div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -187,7 +187,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
   <span class="sidebar-brand-text">Documentation SAE3.2 </span>
@@ -199,9 +199,12 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">src</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of src</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="client.html">Client Module</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Server Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server Module</a></li>
 </ul>
 
 </div>
@@ -222,7 +225,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/server.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/index.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -236,56 +239,47 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-server">
-<span id="server-module"></span><h1>Server Module<a class="headerlink" href="#module-server" title="Lien vers cette rubrique">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.cleanup_files">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">cleanup_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#cleanup_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.cleanup_files" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode de nettoyage qui supprime les fichiers uploadés avant l’arrêt</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.execute">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.execute" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Fonction qui permet de détecter le langage du script, puis de l’executer et d’envoyer le résultat</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.handle_sigint">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">handle_sigint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#handle_sigint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.handle_sigint" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode qui permet d’arrêter le serveur avec le signal lié à CTRL+C</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.main">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.main" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode qui permet d’obtenir les instructions nécéssaire à l’initialisation du serveur</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.newclient">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">newclient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#newclient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.newclient" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode qui traite les commandes du client</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.receive_file">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">receive_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#receive_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.receive_file" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode qui permet de réceptionner le contenu d’un script puis de le sauvegarder dans un fichier dans le dossier uploads</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="server.session">
-<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.session" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Méthode qui établie la connexion avec le Client</p>
-</dd></dl>
-
+          <section id="sae3-2-documentation">
+<h1>SAE3.2 documentation<a class="headerlink" href="#sae3-2-documentation" title="Lien vers cette rubrique">¶</a></h1>
+<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
+documentation for details.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Client Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client.html#server-py">server.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.ConsoleWindow"><code class="docutils literal notranslate"><span class="pre">ConsoleWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.CreateWindow"><code class="docutils literal notranslate"><span class="pre">CreateWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.EditorWindow"><code class="docutils literal notranslate"><span class="pre">EditorWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.LanguageWindow"><code class="docutils literal notranslate"><span class="pre">LanguageWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.RenameWindow"><code class="docutils literal notranslate"><span class="pre">RenameWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.Worker"><code class="docutils literal notranslate"><span class="pre">Worker</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#client.WorkerThread"><code class="docutils literal notranslate"><span class="pre">WorkerThread</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.cleanup_files"><code class="docutils literal notranslate"><span class="pre">cleanup_files()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.handle_sigint"><code class="docutils literal notranslate"><span class="pre">handle_sigint()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.newclient"><code class="docutils literal notranslate"><span class="pre">newclient()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.receive_file"><code class="docutils literal notranslate"><span class="pre">receive_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server.session"><code class="docutils literal notranslate"><span class="pre">session()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
         </article>
@@ -293,18 +287,16 @@
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="client.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+          <a class="next-page" href="modules.html">
               <div class="page-info">
                 <div class="context">
-                  <span>Previous</span>
+                  <span>Next</span>
                 </div>
-                
-                <div class="title">Client Module</div>
-                
+                <div class="title">src</div>
               </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -323,33 +315,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Server Module</a><ul>
-<li><a class="reference internal" href="#server.cleanup_files"><code class="docutils literal notranslate"><span class="pre">cleanup_files()</span></code></a></li>
-<li><a class="reference internal" href="#server.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
-<li><a class="reference internal" href="#server.handle_sigint"><code class="docutils literal notranslate"><span class="pre">handle_sigint()</span></code></a></li>
-<li><a class="reference internal" href="#server.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li><a class="reference internal" href="#server.newclient"><code class="docutils literal notranslate"><span class="pre">newclient()</span></code></a></li>
-<li><a class="reference internal" href="#server.receive_file"><code class="docutils literal notranslate"><span class="pre">receive_file()</span></code></a></li>
-<li><a class="reference internal" href="#server.session"><code class="docutils literal notranslate"><span class="pre">session()</span></code></a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

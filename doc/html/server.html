@@ -2,10 +2,12 @@
 <html class="no-js" lang="fr" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Recherche" href="search.html" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="prev" title="Client Module" href="client.html" />
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 --><title>Index - Documentation SAE3.2</title>
-<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>Server Module - Documentation SAE3.2</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
@@ -176,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -197,12 +199,12 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">src</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of src</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="client.html">Client Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="server.html">Server Module</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Server Module</a></li>
 </ul>
 
 </div>
@@ -222,7 +224,13 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/server.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
@@ -231,270 +239,79 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          
-<section class="genindex-section">
-  <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#W"><strong>W</strong></a></div>
+          <section id="module-server">
+<span id="server-module"></span><h1>Server Module<a class="headerlink" href="#module-server" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.cleanup_files">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">cleanup_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#cleanup_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.cleanup_files" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode de nettoyage qui supprime les fichiers uploadés avant l’arrêt</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.execute">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.execute" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fonction qui permet de détecter le langage du script, puis de l’executer et d’envoyer le résultat</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>file (str): fichier qui doit être executé
+conn (socket): objet socket du serveur</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: peut retourner err:lang si le langage n’est pas supporté</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.handle_sigint">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">handle_sigint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#handle_sigint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.handle_sigint" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode qui permet d’arrêter le serveur avec le signal lié à CTRL+C</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>signal (None): objet signal
+frame (int): indice de la position arrêté</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.main">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.main" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode qui permet d’obtenir les instructions nécéssaire à l’initialisation du serveur</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.newclient">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">newclient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#newclient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.newclient" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode qui traite les commandes du client</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>conn (socket): objet socket du serveur
+address (str): adresse du client</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.receive_file">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">receive_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#receive_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.receive_file" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode qui permet de réceptionner le contenu d’un script puis de le sauvegarder dans un fichier dans le dossier uploads</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>conn (socket): objet socket du serveur
+address (str): adresse du client</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.session">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.session" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode qui établie la connexion avec le Client</p>
+</dd></dl>
+
 </section>
-<section id="A" class="genindex-section">
-  <h2>A</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.LanguageWindow.annuler">annuler() (méthode client.LanguageWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="C" class="genindex-section">
-  <h2>C</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="server.html#server.cleanup_files">cleanup_files() (dans le module server)</a>
-</li>
-        <li><a href="client.html#client.ConsoleWindow.clear">clear() (méthode client.ConsoleWindow)</a>
-</li>
-        <li>
-    client
-
-        <ul>
-          <li><a href="client.html#module-client">module</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow">ConsoleWindow (classe dans client)</a>
-</li>
-        <li><a href="client.html#client.CreateWindow">CreateWindow (classe dans client)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="E" class="genindex-section">
-  <h2>E</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.WorkerThread.echange">echange() (méthode client.WorkerThread)</a>
-</li>
-        <li><a href="client.html#client.WorkerThread.ecoute">ecoute() (méthode client.WorkerThread)</a>
-</li>
-        <li><a href="client.html#client.MainWindow.edit">edit() (méthode client.MainWindow)</a>
-</li>
-        <li><a href="client.html#client.EditorWindow">EditorWindow (classe dans client)</a>
-</li>
-        <li><a href="client.html#client.CreateWindow.enregistrer">enregistrer() (méthode client.CreateWindow)</a>
-
-        <ul>
-          <li><a href="client.html#client.EditorWindow.enregistrer">(méthode client.EditorWindow)</a>
-</li>
-          <li><a href="client.html#client.LanguageWindow.enregistrer">(méthode client.LanguageWindow)</a>
-</li>
-          <li><a href="client.html#client.RenameWindow.enregistrer">(méthode client.RenameWindow)</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.WorkerThread.envoie">envoie() (méthode client.WorkerThread)</a>
-</li>
-        <li><a href="client.html#client.WorkerThread.envoie_fichier">envoie_fichier() (méthode client.WorkerThread)</a>
-</li>
-        <li><a href="client.html#client.Worker.error_signal">error_signal (attribut client.Worker)</a>
-
-        <ul>
-          <li><a href="client.html#client.WorkerThread.error_signal">(attribut client.WorkerThread)</a>
-</li>
-        </ul></li>
-        <li><a href="server.html#server.execute">execute() (dans le module server)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="H" class="genindex-section">
-  <h2>H</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.handle_server_error">handle_server_error() (méthode client.ConsoleWindow)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="server.html#server.handle_sigint">handle_sigint() (dans le module server)</a>
-</li>
-        <li><a href="client.html#client.MainWindow.help">help() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="I" class="genindex-section">
-  <h2>I</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.MainWindow.importe">importe() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="L" class="genindex-section">
-  <h2>L</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.LanguageWindow">LanguageWindow (classe dans client)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="M" class="genindex-section">
-  <h2>M</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="server.html#server.main">main() (dans le module server)</a>
-</li>
-        <li><a href="client.html#client.MainWindow">MainWindow (classe dans client)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li>
-    module
-
-        <ul>
-          <li><a href="client.html#module-client">client</a>
-</li>
-          <li><a href="server.html#module-server">server</a>
-</li>
-        </ul></li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="N" class="genindex-section">
-  <h2>N</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.MainWindow.new">new() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="server.html#server.newclient">newclient() (dans le module server)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="P" class="genindex-section">
-  <h2>P</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.print_message">print_message() (méthode client.ConsoleWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="R" class="genindex-section">
-  <h2>R</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="server.html#server.receive_file">receive_file() (dans le module server)</a>
-</li>
-        <li><a href="client.html#client.MainWindow.rename">rename() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.RenameWindow">RenameWindow (classe dans client)</a>
-</li>
-        <li><a href="client.html#client.Worker.run">run() (méthode client.Worker)</a>
-
-        <ul>
-          <li><a href="client.html#client.WorkerThread.run">(méthode client.WorkerThread)</a>
-</li>
-        </ul></li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="S" class="genindex-section">
-  <h2>S</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.send_message">send_message() (méthode client.ConsoleWindow)</a>
-</li>
-        <li>
-    server
-
-        <ul>
-          <li><a href="server.html#module-server">module</a>
-</li>
-        </ul></li>
-        <li><a href="server.html#server.session">session() (dans le module server)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.MainWindow.show_error">show_error() (méthode client.MainWindow)</a>
-</li>
-        <li><a href="client.html#client.MainWindow.start_console">start_console() (méthode client.MainWindow)</a>
-</li>
-        <li><a href="client.html#client.ConsoleWindow.start_timer">start_timer() (méthode client.ConsoleWindow)</a>
-</li>
-        <li><a href="client.html#client.ConsoleWindow.stop_timer">stop_timer() (méthode client.ConsoleWindow)</a>
-</li>
-        <li><a href="client.html#client.MainWindow.suppr">suppr() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="T" class="genindex-section">
-  <h2>T</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.text_color">text_color() (méthode client.ConsoleWindow)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.toggle_color">toggle_color() (méthode client.ConsoleWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="U" class="genindex-section">
-  <h2>U</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.ConsoleWindow.update_timer">update_timer() (méthode client.ConsoleWindow)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.MainWindow.upload">upload() (méthode client.MainWindow)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="W" class="genindex-section">
-  <h2>W</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.Worker">Worker (classe dans client)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="client.html#client.WorkerThread">WorkerThread (classe dans client)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
 
         </article>
       </div>
@@ -502,7 +319,17 @@
         
         <div class="related-pages">
           
-          
+          <a class="prev-page" href="client.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Client Module</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -521,8 +348,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Server Module</a><ul>
+<li><a class="reference internal" href="#server.cleanup_files"><code class="docutils literal notranslate"><span class="pre">cleanup_files()</span></code></a></li>
+<li><a class="reference internal" href="#server.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li><a class="reference internal" href="#server.handle_sigint"><code class="docutils literal notranslate"><span class="pre">handle_sigint()</span></code></a></li>
+<li><a class="reference internal" href="#server.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#server.newclient"><code class="docutils literal notranslate"><span class="pre">newclient()</span></code></a></li>
+<li><a class="reference internal" href="#server.receive_file"><code class="docutils literal notranslate"><span class="pre">receive_file()</span></code></a></li>
+<li><a class="reference internal" href="#server.session"><code class="docutils literal notranslate"><span class="pre">session()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

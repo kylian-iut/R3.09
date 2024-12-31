@@ -199,6 +199,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">src</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of src</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../client.html">Client Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../server.html">Server Module</a></li>
 </ul>
@@ -253,8 +256,14 @@
 <div class="viewcode-block" id="execute">
 <a class="viewcode-back" href="../server.html#server.execute">[docs]</a>
 <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fonction qui permet de détecter le langage du script, puis de l&#39;executer et d&#39;envoyer le résultat</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fonction qui permet de détecter le langage du script, puis de l&#39;executer et d&#39;envoyer le résultat</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file (str): fichier qui doit être executé</span>
+<span class="sd">        conn (socket): objet socket du serveur</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: peut retourner err:lang si le langage n&#39;est pas supporté</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">status</span><span class="o">=</span><span class="kc">None</span>
@@ -314,8 +323,11 @@
 <div class="viewcode-block" id="handle_sigint">
 <a class="viewcode-back" href="../server.html#server.handle_sigint">[docs]</a>
 <span class="k">def</span> <span class="nf">handle_sigint</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode qui permet d&#39;arrêter le serveur avec le signal lié à CTRL+C</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode qui permet d&#39;arrêter le serveur avec le signal lié à CTRL+C</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (None): objet signal</span>
+<span class="sd">        frame (int): indice de la position arrêté</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31mLe serveur s&#39;arrête.</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">)</span>
     <span class="n">shutdown_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
@@ -324,8 +336,7 @@
 <div class="viewcode-block" id="session">
 <a class="viewcode-back" href="../server.html#server.session">[docs]</a>
 <span class="k">def</span> <span class="nf">session</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode qui établie la connexion avec le Client</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode qui établie la connexion avec le Client</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">clients</span>
     <span class="k">global</span> <span class="n">max_client</span>
@@ -369,9 +380,8 @@
 <div class="viewcode-block" id="cleanup_files">
 <a class="viewcode-back" href="../server.html#server.cleanup_files">[docs]</a>
 <span class="k">def</span> <span class="nf">cleanup_files</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode de nettoyage qui supprime les fichiers uploadés avant l&#39;arrêt</span>
-<span class="sd">    &quot;&quot;&quot;</span>   
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode de nettoyage qui supprime les fichiers uploadés avant l&#39;arrêt</span>
+<span class="sd">    &quot;&quot;&quot;</span>  
     <span class="k">try</span><span class="p">:</span>
         <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
@@ -386,8 +396,11 @@
 <div class="viewcode-block" id="newclient">
 <a class="viewcode-back" href="../server.html#server.newclient">[docs]</a>
 <span class="k">def</span> <span class="nf">newclient</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode qui traite les commandes du client</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode qui traite les commandes du client</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn (socket): objet socket du serveur</span>
+<span class="sd">        address (str): adresse du client</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">clients</span>
     <span class="k">try</span><span class="p">:</span>
@@ -447,8 +460,11 @@
 <div class="viewcode-block" id="receive_file">
 <a class="viewcode-back" href="../server.html#server.receive_file">[docs]</a>
 <span class="k">def</span> <span class="nf">receive_file</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode qui permet de réceptionner le contenu d&#39;un script puis de le sauvegarder dans un fichier dans le dossier uploads</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode qui permet de réceptionner le contenu d&#39;un script puis de le sauvegarder dans un fichier dans le dossier uploads</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn (socket): objet socket du serveur</span>
+<span class="sd">        address (str): adresse du client</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">clients</span>
     <span class="k">try</span><span class="p">:</span>
@@ -483,8 +499,7 @@
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../server.html#server.main">[docs]</a>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Méthode qui permet d&#39;obtenir les instructions nécéssaire à l&#39;initialisation du serveur</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Méthode qui permet d&#39;obtenir les instructions nécéssaire à l&#39;initialisation du serveur</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">port</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>

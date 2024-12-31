@@ -199,6 +199,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">src</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of src</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../client.html">Client Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../server.html">Server Module</a></li>
 </ul>
@@ -236,7 +239,16 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Code source de client</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">server.py</span>
+<span class="sd">=========</span>
+<span class="sd">Ce module contient les fonctionnalités pour le serveur.</span>
+
+<span class="sd">Auteur : Kylian ADAM</span>
+<span class="sd">Date : 2024-12-31</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -270,9 +282,26 @@
 <div class="viewcode-block" id="WorkerThread">
 <a class="viewcode-back" href="../client.html#client.WorkerThread">[docs]</a>
 <span class="k">class</span> <span class="nc">WorkerThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class pour l&#39;instanciation de la communication avec le Serveur</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QThread (_type_): C&#39;est une thread, une execution parallèle qui se ratache à la principale avec des signaux</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        _type_: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">error_signal</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">main</span><span class="p">,</span> <span class="n">console_window</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialisation de l&#39;objet de la Class</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host (str): adresse réseau de l&#39;hôte IPv4 IPv6 ou nom</span>
+<span class="sd">            port (int): port tcp de l&#39;hôte</span>
+<span class="sd">            files (list): la liste de touss fichiers [nom:data]</span>
+<span class="sd">            main (str): le nom du fichier qui devra être executé, donc envoyé en premier</span>
+<span class="sd">            console_window (ConsoleWindow): objet </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="o">=</span><span class="n">host</span>
@@ -284,14 +313,21 @@
 <div class="viewcode-block" id="WorkerThread.run">
 <a class="viewcode-back" href="../client.html#client.WorkerThread.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instructions executé pour thread.start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">echange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">console_window</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WorkerThread.ecoute">
 <a class="viewcode-back" href="../client.html#client.WorkerThread.ecoute">[docs]</a>
     <span class="k">def</span> <span class="nf">ecoute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_socket</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Méthode qui permet d&#39;obtenir et de traiter un réponse du serveur</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui permet d&#39;obtenir et de traiter une réponse du serveur</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_socket (socket): L&#39;objet socket client</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: code retour</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
@@ -340,8 +376,12 @@
 <div class="viewcode-block" id="WorkerThread.envoie_fichier">
 <a class="viewcode-back" href="../client.html#client.WorkerThread.envoie_fichier">[docs]</a>
     <span class="k">def</span> <span class="nf">envoie_fichier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_socket</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Méthode qui permet l&#39;envoie d&#39;un script au serveur</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui permet l&#39;envoie d&#39;un script au serveur</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_socket (socket): L&#39;objet socket client</span>
+<span class="sd">            file_name (str): nom du fichier</span>
+<span class="sd">            data (str): données du fichier</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> octets&quot;</span><span class="p">)</span>
@@ -367,8 +407,12 @@
 <div class="viewcode-block" id="WorkerThread.envoie">
 <a class="viewcode-back" href="../client.html#client.WorkerThread.envoie">[docs]</a>
     <span class="k">def</span> <span class="nf">envoie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_socket</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Méthode qui gère l&#39;envoie de commandes au serveur</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui gère l&#39;envoie de commandes au serveur</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_socket (socket): L&#39;objet socket client</span>
+<span class="sd">            message (str): Commande à envoyer au Serveur. Exemple : &#39;fichier:nomdufichier&#39;</span>
+<span class="sd">            data (str, optional): Peu contenir les données d&#39;un script. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">server_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecoute</span><span class="p">(</span><span class="n">client_socket</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">server_status</span> <span class="o">==</span> <span class="s1">&#39;occuped&#39;</span><span class="p">:</span>
@@ -394,8 +438,14 @@
 <div class="viewcode-block" id="WorkerThread.echange">
 <a class="viewcode-back" href="../client.html#client.WorkerThread.echange">[docs]</a>
     <span class="k">def</span> <span class="nf">echange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span><span class="n">files</span><span class="p">,</span><span class="n">main</span><span class="p">,</span> <span class="n">console_window</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host (str): adresse réseau de l&#39;hôte IPv4 IPv6 ou nom</span>
+<span class="sd">            port (int): port tcp de l&#39;hôte</span>
+<span class="sd">            files (list): la liste de touss fichiers [nom:data]</span>
+<span class="sd">            main (str): le nom du fichier qui devra être executé, donc envoyé en premier</span>
+<span class="sd">            console_window (ConsoleWindow): objet</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
@@ -454,14 +504,17 @@
 <div class="viewcode-block" id="Worker">
 <a class="viewcode-back" href="../client.html#client.Worker">[docs]</a>
 <span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="c1"># Signal pour envoyer un message d&#39;erreur</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class qui permet d&#39;envoyer un message d&#39;erreur depuis un signal d&#39;une thread</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QObject (Worker): objet</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">error_signal</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Worker.run">
 <a class="viewcode-back" href="../client.html#client.Worker.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Méthode qui empêche de traiter le script d&#39;un langage non supporté</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui empêche de traiter le script d&#39;un langage non supporté</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Simule une tâche en arrière-plan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s2">&quot;Script ne peut pas être exécuté&quot;</span><span class="p">)</span></div>
@@ -471,7 +524,20 @@
 <div class="viewcode-block" id="ConsoleWindow">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">ConsoleWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fenêtre qui renvoie le résultat de l&#39;execution</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QMainWindow (MainWindow): La fenêtre principale est parente de celle-ci</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">main</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise l&#39;interface de le fenêtre Console et redémarre le chrono</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host (str): adresse réseau de l&#39;hôte IPv4 IPv6 ou nom</span>
+<span class="sd">            port (int): port tcp de l&#39;hôte</span>
+<span class="sd">            files (list): la liste de touss fichiers [nom:data]</span>
+<span class="sd">            main (str): le nom du fichier qui devra être executé, donc envoyé en premier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Console&quot;</span><span class="p">)</span>
@@ -489,21 +555,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Effacer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear_button</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; self.toggle_button = QPushButton(&quot;Démarrer&quot;, self)</span>
-<span class="sd">        self.toggle_button.setStyleSheet(&quot;background-color: green; color: white;&quot;)</span>
-<span class="sd">        self.toggle_button.clicked.connect(self.toggle_color)</span>
-<span class="sd">        layout.addWidget(self.toggle_button, 1, 0)</span>
-
-<span class="sd">        self.line_edit = QLineEdit(self)</span>
-<span class="sd">        self.line_edit.setPlaceholderText(&quot;Entrez un message&quot;)</span>
-<span class="sd">        self.line_edit.setReadOnly(True)</span>
-<span class="sd">        self.line_edit.returnPressed.connect(self.send_message)</span>
-<span class="sd">        layout.addWidget(self.line_edit, 1, 1)</span>
-
-<span class="sd">        self.send_button = QPushButton(&quot;Envoyer&quot;, self)</span>
-<span class="sd">        self.send_button.clicked.connect(self.send_message)</span>
-<span class="sd">        layout.addWidget(self.send_button, 1, 2) &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">quit_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Quitter&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">quit_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
@@ -534,7 +585,11 @@
 <div class="viewcode-block" id="ConsoleWindow.handle_server_error">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.handle_server_error">[docs]</a>
     <span class="k">def</span> <span class="nf">handle_server_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gérer l&#39;erreur de serveur : arrêter le chronomètre et afficher un pop-up. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gérer l&#39;erreur du serveur : arrêter le chronomètre et afficher un pop-up.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            error_message (str): détail de l&#39;erreur</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_timer</span><span class="p">()</span>  <span class="c1"># Arrêter le chronomètre</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
@@ -548,7 +603,8 @@
 <div class="viewcode-block" id="ConsoleWindow.start_timer">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.start_timer">[docs]</a>
     <span class="k">def</span> <span class="nf">start_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Démarre ou redémarre le chronomètre. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Démarre ou redémarre le chronomètre</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span> <span class="o">=</span> <span class="n">QTime</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Réinitialiser le temps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Démarrer le timer (actualise toutes les 10 ms)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_label</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span><span class="o">.</span><span class="n">msec</span><span class="p">()</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
@@ -557,39 +613,16 @@
 <div class="viewcode-block" id="ConsoleWindow.stop_timer">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.stop_timer">[docs]</a>
     <span class="k">def</span> <span class="nf">stop_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Arrête le chronomètre</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="ConsoleWindow.toggle_color">
-<a class="viewcode-back" href="../client.html#client.ConsoleWindow.toggle_color">[docs]</a>
-    <span class="k">def</span> <span class="nf">toggle_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">current_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">styleSheet</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;green&quot;</span> <span class="ow">in</span> <span class="n">current_color</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: red; color: white;&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Arrêter&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">line_edit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_message</span><span class="p">(</span><span class="s2">&quot;Hello World !&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: green; color: white;&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Démarrer&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">line_edit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">line_edit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="ConsoleWindow.send_message">
-<a class="viewcode-back" href="../client.html#client.ConsoleWindow.send_message">[docs]</a>
-    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt; </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">line_edit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ConsoleWindow.update_timer">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.update_timer">[docs]</a>
     <span class="k">def</span> <span class="nf">update_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Met à jour le temps écoulé toutes les secondes. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Met à jour le temps écoulé, prévu toutes les 10 milisecondes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span><span class="o">.</span><span class="n">addMSecs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_label</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_elapsed</span><span class="o">.</span><span class="n">msec</span><span class="p">()</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
@@ -597,18 +630,30 @@
 <div class="viewcode-block" id="ConsoleWindow.text_color">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.text_color">[docs]</a>
     <span class="k">def</span> <span class="nf">text_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Changge la couleur du texte</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            color (QColor): objet qui définit la couleur</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">setTextColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ConsoleWindow.print_message">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.print_message">[docs]</a>
     <span class="k">def</span> <span class="nf">print_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Affiche un message sur le terminal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): contenu du message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     
 <div class="viewcode-block" id="ConsoleWindow.clear">
 <a class="viewcode-back" href="../client.html#client.ConsoleWindow.clear">[docs]</a>
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retire le texte du terminal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 </div>
 
@@ -616,7 +661,19 @@
 <div class="viewcode-block" id="LanguageWindow">
 <a class="viewcode-back" href="../client.html#client.LanguageWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">LanguageWindow</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface qui permet de renseigner le langage d&#39;execution avant d&#39;envoyer le script main</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QWidget (None): objet QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise l&#39;interface de la fenêtre de sélection</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files (list): la liste de touss fichiers [nom:data]</span>
+<span class="sd">            file_name (str): le nom du fichier qui devra être executé, donc envoyé en premier</span>
+<span class="sd">            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FILES</span><span class="o">=</span><span class="n">files</span>
@@ -665,12 +722,16 @@
 <div class="viewcode-block" id="LanguageWindow.annuler">
 <a class="viewcode-back" href="../client.html#client.LanguageWindow.annuler">[docs]</a>
     <span class="k">def</span> <span class="nf">annuler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;L&#39;action du bouton annuler c&#39;est de fermer la fenêtre</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="LanguageWindow.enregistrer">
 <a class="viewcode-back" href="../client.html#client.LanguageWindow.enregistrer">[docs]</a>
     <span class="k">def</span> <span class="nf">enregistrer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;L&#39;action du bouton enregistrer qui va relayer le nouveau fichier à la Console</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selected_language</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">old_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span>
         <span class="n">tempfiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># cette manière permet de contourner la façon dont Python gère les objets mutables. Puisque avec seulement =, les deux variables pointent vers le même objet en mémoire</span>
@@ -696,7 +757,18 @@
 <div class="viewcode-block" id="RenameWindow">
 <a class="viewcode-back" href="../client.html#client.RenameWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">RenameWindow</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fenêtre qui permet de renommer le nom d&#39;un script</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QWidget (None): objet QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui initialise l&#39;interface de la fenêtre pour renommer</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str): le nom du fichier qui doit être renommer</span>
+<span class="sd">            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">old_name</span> <span class="o">=</span> <span class="n">file_name</span>
@@ -725,6 +797,8 @@
 <div class="viewcode-block" id="RenameWindow.enregistrer">
 <a class="viewcode-back" href="../client.html#client.RenameWindow.enregistrer">[docs]</a>
     <span class="k">def</span> <span class="nf">enregistrer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;L&#39;action du bouton enregistrer est de s&#39;assurer que ce nom n&#39;est pas déjà utilisé avant de le modifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">new_name</span><span class="p">:</span>
@@ -746,7 +820,18 @@
 <div class="viewcode-block" id="EditorWindow">
 <a class="viewcode-back" href="../client.html#client.EditorWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">EditorWindow</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fenêtre d&#39;édition du script</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QWidget (None): objet QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui initialise l&#39;interface pour l&#39;édition d&#39;un script</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str): le nom d&#39;un fichier à éditer</span>
+<span class="sd">            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
@@ -774,6 +859,8 @@
 <div class="viewcode-block" id="EditorWindow.enregistrer">
 <a class="viewcode-back" href="../client.html#client.EditorWindow.enregistrer">[docs]</a>
     <span class="k">def</span> <span class="nf">enregistrer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;L&#39;action enregistrer va mettre à jour la valeur des données associés au nom du fichier dans la liste des fichiers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_edit</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -783,7 +870,17 @@
 <div class="viewcode-block" id="CreateWindow">
 <a class="viewcode-back" href="../client.html#client.CreateWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">CreateWindow</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;La fenêtre qui permet de créer un nouveau script</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QWidget (None): QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode qui initialise l&#39;affichage de la fenêtre de création d&#39;un script</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span>
@@ -813,6 +910,8 @@
 <div class="viewcode-block" id="CreateWindow.enregistrer">
 <a class="viewcode-back" href="../client.html#client.CreateWindow.enregistrer">[docs]</a>
     <span class="k">def</span> <span class="nf">enregistrer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;L&#39;action enregistrer va associer pour un nouvel élément de la liste des fichiers le nom du fichier avec ses données si le nom n&#39;est pas déjà utilisé</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">file_name</span><span class="p">:</span>
@@ -834,7 +933,14 @@
 <div class="viewcode-block" id="MainWindow">
 <a class="viewcode-back" href="../client.html#client.MainWindow">[docs]</a>
 <span class="k">class</span> <span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fenêtre principale de l&#39;interface</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        QMainWindow (None): objet QMainWindow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Méthode d&#39;initialisation de l&#39;interface de la fenêtre principale</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">global</span> <span class="n">port</span>
         <span class="k">global</span> <span class="n">host</span>
@@ -906,6 +1012,8 @@
 <div class="viewcode-block" id="MainWindow.importe">
 <a class="viewcode-back" href="../client.html#client.MainWindow.importe">[docs]</a>
     <span class="k">def</span> <span class="nf">importe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton qui permet d&#39;importer des scripts dans la liste</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Ouvre l&#39;explorateur natif pour sélectionner des fichiers</span>
         <span class="n">selected_files</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -942,6 +1050,8 @@
 <div class="viewcode-block" id="MainWindow.edit">
 <a class="viewcode-back" href="../client.html#client.MainWindow.edit">[docs]</a>
     <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton d&#39;édition du script</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">file_name</span><span class="o">=</span><span class="n">selected_items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
@@ -953,6 +1063,8 @@
 <div class="viewcode-block" id="MainWindow.new">
 <a class="viewcode-back" href="../client.html#client.MainWindow.new">[docs]</a>
     <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton d&#39;ajout d&#39;un script</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_window</span> <span class="o">=</span> <span class="n">CreateWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_window</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
@@ -961,6 +1073,8 @@
 <div class="viewcode-block" id="MainWindow.rename">
 <a class="viewcode-back" href="../client.html#client.MainWindow.rename">[docs]</a>
     <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton de renonomage du script</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">file_name</span><span class="o">=</span><span class="n">selected_items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
@@ -972,6 +1086,8 @@
 <div class="viewcode-block" id="MainWindow.suppr">
 <a class="viewcode-back" href="../client.html#client.MainWindow.suppr">[docs]</a>
     <span class="k">def</span> <span class="nf">suppr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton de suppression d&#39;un ou plusieurs scripts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">takeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">selected_items</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -993,6 +1109,8 @@
 <div class="viewcode-block" id="MainWindow.upload">
 <a class="viewcode-back" href="../client.html#client.MainWindow.upload">[docs]</a>
     <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton Téléverser ; On vérifie les champs adresse et port et on prépare l&#39;échange avec le serveur</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listWidget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span> <span class="c1"># Le fichier sélectionné sera main</span>
         <span class="c1"># Regex pour IPv4, IPv6, Hostname et Port réseau</span>
         <span class="n">ipv4_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^(25[0-5]|2[0-4][0-9]|1[0-9]</span><span class="si">{2}</span><span class="s1">|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]</span><span class="si">{2}</span><span class="s1">|[1-9]?[0-9]))</span><span class="si">{3}</span><span class="s1">$&#39;</span>
@@ -1018,6 +1136,12 @@
 <div class="viewcode-block" id="MainWindow.start_console">
 <a class="viewcode-back" href="../client.html#client.MainWindow.start_console">[docs]</a>
     <span class="k">def</span> <span class="nf">start_console</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Démarrage de l&#39;instance pour la console</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files (list): la liste de touss fichiers [nom:data]</span>
+<span class="sd">            file_name (str): le nom du fichier qui devra être executé, donc envoyé en premier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">console_window</span> <span class="o">=</span> <span class="n">ConsoleWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serv</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span><span class="n">files</span><span class="p">,</span><span class="n">file_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">console_window</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">console_window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1027,6 +1151,11 @@
 <div class="viewcode-block" id="MainWindow.show_error">
 <a class="viewcode-back" href="../client.html#client.MainWindow.show_error">[docs]</a>
     <span class="k">def</span> <span class="nf">show_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boite de dialogue du message d&#39;erreur</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): détail de l&#39;erreur</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Erreur&quot;</span><span class="p">)</span>
@@ -1038,6 +1167,8 @@
 <div class="viewcode-block" id="MainWindow.help">
 <a class="viewcode-back" href="../client.html#client.MainWindow.help">[docs]</a>
     <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action du bouton Aide ? ; Affiche une information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Aide&quot;</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Importez des fichiers, puis sélectionnez le fichier ciblé pour effectuer une action dessus sur la droite. Si vous choisissez Téléverser, le fichier sélectionné sera le script principal&quot;</span><span class="p">)</span>
