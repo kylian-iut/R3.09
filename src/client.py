@@ -1,3 +1,12 @@
+"""
+server.py
+=========
+Ce module contient les fonctionnalités pour le serveur.
+
+Auteur : Kylian ADAM
+Date : 2024-12-31
+"""
+
 import socket
 import threading
 import os
@@ -30,9 +39,26 @@ host = 'localhost'
 port = '8000'
 
 class WorkerThread(QThread):
+    """Class pour l'instanciation de la communication avec le Serveur
+
+    Args:
+        QThread (_type_): C'est une thread, une execution parallèle qui se ratache à la principale avec des signaux
+
+    Returns:
+        _type_: None
+    """
     error_signal = pyqtSignal(str)
 
     def __init__(self, host, port, files, main, console_window):
+        """Initialisation de l'objet de la Class
+
+        Args:
+            host (str): adresse réseau de l'hôte IPv4 IPv6 ou nom
+            port (int): port tcp de l'hôte
+            files (list): la liste de touss fichiers [nom:data]
+            main (str): le nom du fichier qui devra être executé, donc envoyé en premier
+            console_window (ConsoleWindow): objet 
+        """
         super().__init__()
 
         self.host=host
@@ -42,11 +68,18 @@ class WorkerThread(QThread):
         self.console_window=console_window
     
     def run(self):
+        """Instructions executé pour thread.start
+        """
         self.echange(self.host,self.port,self.files,self.main,self.console_window)
 
     def ecoute(self, client_socket):
-        """
-            Méthode qui permet d'obtenir et de traiter un réponse du serveur
+        """Méthode qui permet d'obtenir et de traiter une réponse du serveur
+
+        Args:
+            client_socket (socket): L'objet socket client
+
+        Returns:
+            str: code retour
         """
         try:
             reply = client_socket.recv(1024).decode()
@@ -92,8 +125,12 @@ class WorkerThread(QThread):
             return
 
     def envoie_fichier(self, client_socket, file_name, data):
-        """
-            Méthode qui permet l'envoie d'un script au serveur
+        """Méthode qui permet l'envoie d'un script au serveur
+
+        Args:
+            client_socket (socket): L'objet socket client
+            file_name (str): nom du fichier
+            data (str): données du fichier
         """
         file_size = len(data)
         print(f"{file_name} : {file_size} octets")
@@ -116,8 +153,12 @@ class WorkerThread(QThread):
             print(f"\033[31mErreur lors de l'envoi du fichier : {err}\033[0m")
 
     def envoie(self, client_socket, message, data=None):
-        """
-            Méthode qui gère l'envoie de commandes au serveur
+        """Méthode qui gère l'envoie de commandes au serveur
+
+        Args:
+            client_socket (socket): L'objet socket client
+            message (str): Commande à envoyer au Serveur. Exemple : 'fichier:nomdufichier'
+            data (str, optional): Peu contenir les données d'un script. Defaults to None.
         """
         server_status = self.ecoute(client_socket)
         if server_status == 'occuped':
@@ -140,8 +181,14 @@ class WorkerThread(QThread):
                 return
 
     def echange(self, host, port,files,main, console_window):
-        """
-            Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter
+        """Méthode qui initialise la connexion avec le serveur et le déroulement des actions à lui faire traiter
+
+        Args:
+            host (str): adresse réseau de l'hôte IPv4 IPv6 ou nom
+            port (int): port tcp de l'hôte
+            files (list): la liste de touss fichiers [nom:data]
+            main (str): le nom du fichier qui devra être executé, donc envoyé en premier
+            console_window (ConsoleWindow): objet
         """
         file_names = list(files.keys())
         client_socket = socket.socket()
@@ -196,18 +243,34 @@ class WorkerThread(QThread):
                 self.ecoute(client_socket)
 
 class Worker(QObject):
-    # Signal pour envoyer un message d'erreur
+    """Class qui permet d'envoyer un message d'erreur depuis un signal d'une thread
+
+    Args:
+        QObject (Worker): objet
+    """
     error_signal = pyqtSignal(str)
 
     def run(self):
-        """
-            Méthode qui empêche de traiter le script d'un langage non supporté
+        """Méthode qui empêche de traiter le script d'un langage non supporté
         """
         # Simule une tâche en arrière-plan
         self.error_signal.emit("Script ne peut pas être exécuté")
 
 class ConsoleWindow(QMainWindow):
+    """Fenêtre qui renvoie le résultat de l'execution
+
+    Args:
+        QMainWindow (MainWindow): La fenêtre principale est parente de celle-ci
+    """
     def __init__(self, host, port, files, main):
+        """Initialise l'interface de le fenêtre Console et redémarre le chrono
+
+        Args:
+            host (str): adresse réseau de l'hôte IPv4 IPv6 ou nom
+            port (int): port tcp de l'hôte
+            files (list): la liste de touss fichiers [nom:data]
+            main (str): le nom du fichier qui devra être executé, donc envoyé en premier
+        """
         super().__init__()
 
         self.setWindowTitle("Console")
@@ -225,21 +288,6 @@ class ConsoleWindow(QMainWindow):
         self.clear_button = QPushButton("Effacer", self)
         self.clear_button.clicked.connect(self.clear)
         layout.addWidget(self.clear_button, 1, 0)
-
-        """ self.toggle_button = QPushButton("Démarrer", self)
-        self.toggle_button.setStyleSheet("background-color: green; color: white;")
-        self.toggle_button.clicked.connect(self.toggle_color)
-        layout.addWidget(self.toggle_button, 1, 0)
-
-        self.line_edit = QLineEdit(self)
-        self.line_edit.setPlaceholderText("Entrez un message")
-        self.line_edit.setReadOnly(True)
-        self.line_edit.returnPressed.connect(self.send_message)
-        layout.addWidget(self.line_edit, 1, 1)
-
-        self.send_button = QPushButton("Envoyer", self)
-        self.send_button.clicked.connect(self.send_message)
-        layout.addWidget(self.send_button, 1, 2) """
 
         self.quit_button = QPushButton("Quitter", self)
         self.quit_button.clicked.connect(self.close)
@@ -268,7 +316,11 @@ class ConsoleWindow(QMainWindow):
         self.worker_thread.finished.connect(self.stop_timer)
 
     def handle_server_error(self, error_message):
-        """ Gérer l'erreur de serveur : arrêter le chronomètre et afficher un pop-up. """
+        """Gérer l'erreur du serveur : arrêter le chronomètre et afficher un pop-up.
+
+        Args:
+            error_message (str): détail de l'erreur
+        """
         self.stop_timer()  # Arrêter le chronomètre
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Critical)
@@ -279,50 +331,58 @@ class ConsoleWindow(QMainWindow):
         self.close()
     
     def start_timer(self):
-        """ Démarre ou redémarre le chronomètre. """
+        """Démarre ou redémarre le chronomètre
+        """
         self.time_elapsed = QTime(0, 0)  # Réinitialiser le temps
         self.timer.start(10)  # Démarrer le timer (actualise toutes les 10 ms)
         self.time_label.setPlainText(f"{self.time_elapsed.toString('hh:mm:ss')}.{self.time_elapsed.msec():03d}")
 
     def stop_timer(self):
+        """Arrête le chronomètre
+        """
         self.timer.stop()
 
-    def toggle_color(self):
-        current_color = self.toggle_button.styleSheet()
-        if "green" in current_color:
-            self.toggle_button.setStyleSheet("background-color: red; color: white;")
-            self.toggle_button.setText("Arrêter")
-            self.text_edit.clear()
-            self.line_edit.setReadOnly(False)
-            self.print_message("Hello World !")
-        else:
-            self.toggle_button.setStyleSheet("background-color: green; color: white;")
-            self.toggle_button.setText("Démarrer")
-            self.line_edit.setReadOnly(True)
-            self.line_edit.clear()
-
-    def send_message(self):
-        message = self.line_edit.text()
-        if message:
-            self.text_edit.append(f"> {message}")
-            self.line_edit.clear()
-
     def update_timer(self):
-        """ Met à jour le temps écoulé toutes les secondes. """
+        """Met à jour le temps écoulé, prévu toutes les 10 milisecondes.
+        """
         self.time_elapsed = self.time_elapsed.addMSecs(10)
         self.time_label.setPlainText(f"{self.time_elapsed.toString('hh:mm:ss')}.{self.time_elapsed.msec():03d}")
 
     def text_color(self, color):
+        """Changge la couleur du texte
+
+        Args:
+            color (QColor): objet qui définit la couleur
+        """
         self.text_edit.setTextColor(color)
 
     def print_message(self, message):
+        """Affiche un message sur le terminal
+
+        Args:
+            message (str): contenu du message
+        """
         self.text_edit.append(f"{message}")
     
     def clear(self):
+        """Retire le texte du terminal
+        """
         self.text_edit.clear()
 
 class LanguageWindow(QWidget):
+    """Interface qui permet de renseigner le langage d'execution avant d'envoyer le script main
+
+    Args:
+        QWidget (None): objet QWidget
+    """
     def __init__(self, files, file_name, parent=None):
+        """Initialise l'interface de la fenêtre de sélection
+
+        Args:
+            files (list): la liste de touss fichiers [nom:data]
+            file_name (str): le nom du fichier qui devra être executé, donc envoyé en premier
+            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.
+        """
         super().__init__()
         self.file_name=file_name
         self.FILES=files
@@ -369,9 +429,13 @@ class LanguageWindow(QWidget):
         self.setLayout(grid_layout)
     
     def annuler(self):
+        """L'action du bouton annuler c'est de fermer la fenêtre
+        """
         self.close()
 
     def enregistrer(self):
+        """L'action du bouton enregistrer qui va relayer le nouveau fichier à la Console
+        """
         selected_language = None
         old_name=self.file_name
         tempfiles=self.FILES.copy() # cette manière permet de contourner la façon dont Python gère les objets mutables. Puisque avec seulement =, les deux variables pointent vers le même objet en mémoire
@@ -393,7 +457,18 @@ class LanguageWindow(QWidget):
             self.close()
 
 class RenameWindow(QWidget):
+    """Fenêtre qui permet de renommer le nom d'un script
+
+    Args:
+        QWidget (None): objet QWidget
+    """
     def __init__(self, file_name, parent=None):
+        """Méthode qui initialise l'interface de la fenêtre pour renommer
+
+        Args:
+            file_name (str): le nom du fichier qui doit être renommer
+            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.
+        """
         super().__init__()
         
         self.old_name = file_name
@@ -420,6 +495,8 @@ class RenameWindow(QWidget):
         self.setLayout(layout)
 
     def enregistrer(self):
+        """L'action du bouton enregistrer est de s'assurer que ce nom n'est pas déjà utilisé avant de le modifier
+        """
         new_name = self.new_name_input.text().strip()
 
         if not new_name:
@@ -437,7 +514,18 @@ class RenameWindow(QWidget):
         self.close()
 
 class EditorWindow(QWidget):
+    """Fenêtre d'édition du script
+
+    Args:
+        QWidget (None): objet QWidget
+    """
     def __init__(self, file_name, parent=None):
+        """Méthode qui initialise l'interface pour l'édition d'un script
+
+        Args:
+            file_name (str): le nom d'un fichier à éditer
+            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.
+        """
         super().__init__()
         
         self.resize(550, 330)
@@ -463,12 +551,24 @@ class EditorWindow(QWidget):
         self.setLayout(layout)
 
     def enregistrer(self):
+        """L'action enregistrer va mettre à jour la valeur des données associés au nom du fichier dans la liste des fichiers
+        """
         new_data = self.text_edit.toPlainText()
         self.parent.files[self.file_name] = new_data
         self.close()
 
 class CreateWindow(QWidget):
+    """La fenêtre qui permet de créer un nouveau script
+
+    Args:
+        QWidget (None): QWidget
+    """
     def __init__(self, parent=None):
+        """Méthode qui initialise l'affichage de la fenêtre de création d'un script
+
+        Args:
+            parent (MainWindow, optional): La fenêtre MainWindow est parent de celle-ci. Defaults to None.
+        """
         super().__init__()
 
         self.parent=parent
@@ -496,6 +596,8 @@ class CreateWindow(QWidget):
         self.setLayout(layout)
     
     def enregistrer(self):
+        """L'action enregistrer va associer pour un nouvel élément de la liste des fichiers le nom du fichier avec ses données si le nom n'est pas déjà utilisé
+        """
         file_name = self.file_name_input.text().strip()
 
         if not file_name:
