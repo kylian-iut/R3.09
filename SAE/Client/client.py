@@ -2,7 +2,6 @@ import socket
 import threading
 import os
 import re
-import time
 
 from PyQt6.QtGui import QFont, QColor
 from PyQt6.QtCore import Qt, pyqtSignal, QObject, QThread, QTimer, QTime

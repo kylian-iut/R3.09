@@ -46,22 +46,22 @@ def execute(file, conn):
             print(f"\033[93mScript ne peut pas être executé\033[0m")
             status = "err:lang"
     except subprocess.CalledProcessError as err:
+        conn.send('stderr'.encode())
         error_details=f"{err.stderr}"
         print("Erreur standard :")
         print(error_details)
-        conn.send('stderr'.encode())
         conn.send(error_details.encode('utf-8'))
 
     except Exception as err:
+        conn.send('othererr'.encode())
         error_details=f"Erreur inattendue : {err}"
         print(error_details)
-        conn.send('othererr'.encode())
         conn.send(error_details.encode())
     else:
         if not status:
+            conn.send('stdout'.encode())
             print("Sortie standard :")
             print(result.stdout)
-            conn.send('stdout'.encode())
             conn.send(result.stdout.encode())
     finally:
         if not status:
